@@ -1,0 +1,45 @@
+Checker:
+
+We will implement a two player game - Checker. It includes features such as: 
+register, login and play checker with another player. A user may create a room 
+and wait for other user or they can join the room created by another player. 
+When the main two players are playing checker, other users can watch their match, 
+but only the two players can move the pieces. The user can have whole bunch of 
+statics like victory rates, every game record he played. User can see a rank 
+list to find more skillful players.
+
+Initially, at the loading of the game, user will see a login screen, where he 
+can enter his credentials and login into the game. The initial game state that 
+will be visible to the players will be: each players has twelve pieces, arranged 
+on the diagonals of an 8 x 8 square board. The player can see his/her name as 
+well as his opponents name. The dark-colored pieces move first. As the game 
+advances the players will be able to see how many checker pieces they have lost. 
+
+The players will get the chance alternatively. The user will be moving the 
+pieces with the help of mouse. The pieces can only move forward one tile 
+diagonally. If one of the piece gets to the opposite side of the board 
+(opponents's side last row), it will turn into King where the king can move 
+in any direction diagonally. They can combine forward and backward on the 
+same turn. 
+
+To capture the opponent's piece and to remove it fromt he board, the player 
+can jump over their piece with the other player's. Jumping is mandatory, which 
+means you have to jump with one of your pieces if you are able to.
+
+The player wins by removing all the opponent's pieces from the board, or 
+if the opponent can' make the move.
+
+Basic features to implement:
+1. user register, login/logout, user info management
+2. user can create checker room
+3. user can see the list of undergoing room
+4. user can start a game with another user, the server will hold the session
+5. All checker rules to finish a game should be implemented 
+   (listed in above description)
+6. Other users can see ongoing games
+
+Further features (will implement if time persists):
+7. The result of a game should be recorded to evaluate player's level
+8. The viewer can share their opinions with other viewers, which the 
+   player would not see until they finish their game
+
