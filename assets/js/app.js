@@ -12,6 +12,7 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
+import run_checker from "./checker";
 
 // Import local files
 //
@@ -19,3 +20,9 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+function init() {
+  let root = document.getElementById('root');
+  run_checker(root);
+}
+
+$(init);
