@@ -1,0 +1,46 @@
+defmodule CheckerWeb.GlobalChannel do
+  use CheckerWeb, :channel
+
+  def join("global", payload, socket) do
+    if authorized?(payload) do
+      {:ok, socket}
+    else
+      {:error, %{reason: "unauthorized"}}
+    end
+  end
+
+  def handle_in("current_games", _params, socket) do
+    {:reply, {:ok, %{games: GameSupervisor.current_games()}}, socket}
+  end
+
+  def handle_in("new_game", _params, socket) do
+    game_id = Checker.generate_game_id()
+    GameSupervisor.create_game(game_id)
+
+    {:reply, {:ok, %{game_id: game_id}}, socket}
+  end
+
+  def broadcast_current_games do
+    Checker.Endpoint.broadcast("global", "update_games", %{
+      games: GameSupervisor.current_games()
+    })
+  end
+
+  # Channels can be used in a request/response fashion
+  # by sending replies to requests from the client
+  # def handle_in("ping", payload, socket) do
+  #   {:reply, {:ok, payload}, socket}
+  # end
+
+  # It is also common to receive messages from the client and
+  # broadcast to everyone in the current topic (global:lobby).
+  # def handle_in("shout", payload, socket) do
+  #   broadcast(socket, "shout", payload)
+  #   {:noreply, socket}
+  # end
+
+  # Add authorization logic here as required.
+  defp authorized?(_payload) do
+    true
+  end
+end

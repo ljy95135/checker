@@ -21,6 +21,19 @@
         <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
       <% end %>
 
+      <div class="row">
+        <div class="col-3 offset-9">
+          <%= if @current_user do %>
+            <p>
+              Logged in as: <%= @current_user.name %> |
+              <%= link "Log Out", to: "/session", method: :delete %>
+            </p>
+          <% else %>
+            <p>Not logged in.</p>
+          <% end %>
+        </div>
+      </div>
+      
       <main role="main">
         <%= render @view_module, @view_template, assigns %>
       </main>
