@@ -23,6 +23,6 @@ defmodule Checker.Room.Supervisor do
   defp game_data({_id, pid, _type, _modules}) do
     pid
     |> GenServer.call(:get_data)
-    |> Map.take([:id, :red, :black, :turns, :over, :winner])
+    |> Map.take([:id, :red, :black, :viewers, :turns, :over, :winner])
   end
 end

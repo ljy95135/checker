@@ -10,11 +10,12 @@ defmodule Checker do
   """
 
   def start(_type, _args) do
+    
     # ...
 
     children = [
       # ...
-      supervisor(Checker.Game.Supervisor, [])
+     Supervisor.supervisor(Checker.Game.Supervisor, [])
     ]
   end
 end

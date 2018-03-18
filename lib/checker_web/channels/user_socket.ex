@@ -4,6 +4,7 @@ defmodule CheckerWeb.UserSocket do
   ## Channels
   # channel "room:*", CheckerWeb.RoomChannel
   channel("global", CheckerWeb.GlobalChannel)
+  channel("game:*", CheckerWeb.GameChannel)
 
   ## Transports
   transport(:websocket, Phoenix.Transports.WebSocket)
