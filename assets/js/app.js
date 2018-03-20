@@ -22,9 +22,9 @@ import {Socket} from "phoenix";
 
 // import socket from "./socket"
 function init() {
-  let socket = new Socket("/socket", {params: {token: window.userToken, id:window.userID}});
+  let socket = new Socket("/socket", {params: {token: window.userToken}});
   socket.connect();
-  let channel = socket.channel("global", {id:window.userID});
+  let channel = socket.channel("global",{});
   channel.join()
        .receive("ok", resp => { console.log("Joined Global successfully", resp) })
        .receive("error", resp => { console.log("Unable to join", resp) });
@@ -33,6 +33,9 @@ function init() {
   channel.push('current_games')
   .receive('ok', (payload) => {
     console.log(payload);
+    })
+    .receive('error',(info) => {
+      console.log(info);
     });
 
 
