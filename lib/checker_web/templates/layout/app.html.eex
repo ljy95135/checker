@@ -10,6 +10,9 @@
     <title>Hello Checker!</title>
     <script>
       window.userToken = "TODO";
+      <%= if @current_user do %>
+        window.userID = <%= @current_user.id %>;
+      <% end %>
     </script>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
