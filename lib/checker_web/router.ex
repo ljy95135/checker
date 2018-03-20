@@ -25,6 +25,8 @@ defmodule CheckerWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+    get("/game/:game", PageController, :game)
+
     resources("/users", UserController)
     post("/session", SessionController, :create)
     delete("/session", SessionController, :delete)
