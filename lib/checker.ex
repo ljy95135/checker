@@ -1,6 +1,4 @@
 defmodule Checker do
-  use Application
-
   @moduledoc """
   Checker keeps the contexts that define your domain
   and business logic.
@@ -8,14 +6,4 @@ defmodule Checker do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
-
-  def start(_type, _args) do
-    
-    # ...
-
-    children = [
-      # ...
-     Supervisor.supervisor(Checker.Game.Supervisor, [])
-    ]
-  end
 end

@@ -1,15 +1,15 @@
 defmodule Checker.Room.Supervisor do
   use Supervisor
-  alias Checker.CheckerGame
 
   def start_link, do: Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
     children = [
-      worker(Game, [], restart: :temporary)
+      worker(CheckerWeb.CheckerGame, [], restart: :temporary)
     ]
 
-    supervise(children, strategy: :simple_one_for_one)
+    # supervise(children, strategy: :simple_one_for_one)
+    Supervisor.init(children, strategy: :simple_one_for_one)
   end
 
   def create_game(id), do: Supervisor.start_child(__MODULE__, [id])

@@ -13,19 +13,19 @@ defmodule CheckerWeb.GlobalChannel do
   end
 
   def handle_in("current_games", _params, socket) do
-    {:reply, {:ok, %{games: GameSupervisor.current_games()}}, socket}
+    {:reply, {:ok, %{games: Checker.Room.Supervisor.current_games()}}, socket}
   end
 
   def handle_in("new_game", _params, socket) do
     game_id = Checker.generate_game_id()
-    GameSupervisor.create_game(game_id)
+    Checker.Room.Supervisor.create_game(game_id)
 
     {:reply, {:ok, %{game_id: game_id}}, socket}
   end
 
   def broadcast_current_games do
-    Checker.Endpoint.broadcast("global", "update_games", %{
-      games: GameSupervisor.current_games()
+    CheckerWeb.Endpoint.broadcast("global", "update_games", %{
+      games: Checker.Room.Supervisor.current_games()
     })
   end
 
