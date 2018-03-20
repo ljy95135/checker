@@ -1,7 +1,12 @@
 defmodule CheckerWeb.GlobalChannel do
+  require Logger
   use CheckerWeb, :channel
 
+  Logger.debug("At least here")
+
   def join("global", payload, socket) do
+    Logger.debug("Joining Global #{socket}", socket: socket)
+
     if authorized?(payload) do
       {:ok, socket}
     else

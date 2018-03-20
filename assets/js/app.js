@@ -11,8 +11,9 @@
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-import "phoenix_html"
+import "phoenix_html";
 import run_checker from "./checker";
+import socket from "./socket";
 
 // Import local files
 //
@@ -21,8 +22,15 @@ import run_checker from "./checker";
 
 // import socket from "./socket"
 function init() {
+  let channel = socket.channel("global", {});
+  channel.join()
+       .receive("ok", resp => { console.log("Joined successfully", resp) })
+       .receive("error", resp => { console.log("Unable to join", resp) });
+  console.log("Join it", channel);
   let root = document.getElementById('root');
-  run_checker(root);
+  if(root){
+    run_checker(root);
+  }
 }
 
 $(init);

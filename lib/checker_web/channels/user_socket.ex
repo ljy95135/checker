@@ -1,8 +1,11 @@
 defmodule CheckerWeb.UserSocket do
   use Phoenix.Socket
+  require Logger
 
   ## Channels
   # channel "room:*", CheckerWeb.RoomChannel
+  Logger.debug("Joining")
+
   channel("global", CheckerWeb.GlobalChannel)
   channel("game:*", CheckerWeb.GameChannel)
 
