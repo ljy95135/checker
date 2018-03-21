@@ -1,8 +1,17 @@
 <div>
-   Room Name
-    <input type="text" name="roomName" placeholder="Enter name" >
+  Room Name
+  <input type="text" id="room-input" placeholder="Enter name" >
+</div>
+<br/>
+<div id="create-room-page">
+  <button id="create-room-button" class="btn btn-primary">Create Room</button>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>Current Rooms</h1>
+    <div id="current_room_list">
+      <p>React app not loaded...</p>
+    </div>
   </div>
-  <br/>
-  <div>
-    <button class="btn btn-primary">Create Room</button>
-  </div>
+</div>

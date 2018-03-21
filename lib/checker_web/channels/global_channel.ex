@@ -16,8 +16,8 @@ defmodule CheckerWeb.GlobalChannel do
     {:reply, {:ok, %{games: Checker.Room.Supervisor.current_games()}}, socket}
   end
 
-  def handle_in("new_game", _params, socket) do
-    game_id = Checker.generate_game_id()
+  def handle_in("new_game", params, socket) do
+    game_id = params["game_name"]
     Checker.Room.Supervisor.create_game(game_id)
 
     {:reply, {:ok, %{game_id: game_id}}, socket}

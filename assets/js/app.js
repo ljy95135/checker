@@ -6,14 +6,16 @@
 // explicitly imported. The only exception are files
 // in vendor, which are never wrapped in imports and
 // therefore are always executed.
-
 // Import dependencies
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html";
 import run_checker from "./checker";
-import {Socket} from "phoenix";
+import run_room_list from "./room_list";
+import {
+  Socket
+} from "phoenix";
 
 // Import local files
 //
@@ -22,28 +24,64 @@ import {Socket} from "phoenix";
 
 // import socket from "./socket"
 function init() {
-  let socket = new Socket("/socket", {params: {token: window.userToken}});
+  // create socket
+  let socket = new Socket("/socket", {
+    params: {
+      token: window.userToken
+    }
+  });
   socket.connect();
-  let channel = socket.channel("global",{});
+
+  // global channel
+  let channel = socket.channel("global", {});
   channel.join()
-       .receive("ok", resp => { console.log("Joined Global successfully", resp) })
-       .receive("error", resp => { console.log("Unable to join", resp) });
+    .receive("ok", resp => {
+      console.log("Joined Global successfully", resp)
+    })
+    .receive("error", resp => {
+      console.log("Unable to join", resp)
+    });
   console.log("Join it", channel);
 
-  channel.push('current_games')
-  .receive('ok', (payload) => {
-    console.log(payload);
-    })
-    .receive('error',(info) => {
-      console.log(info);
+  if (document.getElementById('create-room-page')) {
+    $('#create-room-button').click(() => {
+      let xx = $('#room-input').val();
+      // new_game
+      if (xx) {
+        let params = {game_name: xx};
+        console.log(params);
+        channel.push('new_game', params)
+          .receive('ok', (payload) => {
+            console.log("successful new game", payload);
+          })
+          .receive('error', (info) => {
+            console.log("error new game", info);
+          })
+      }
+      // window.location = "/game/" + xx;
     });
-
-
+  }
 
   let root = document.getElementById('root');
-  if(root){
+  if (root) {
     run_checker(root);
   }
+
+  // current_games
+  channel.push('current_games')
+    .receive('ok', (payload) => {
+      console.log("get current_games", payload);
+      let current_rooms = payload.games;
+      // put list render after receive.
+      let rooms_root = document.getElementById('current_room_list')
+      if (rooms_root) {
+        run_room_list(rooms_root, current_rooms);
+      }
+    })
+    .receive('error', (info) => {
+      console.log("error current_games", info);
+    });
 }
+
 
 $(init);
