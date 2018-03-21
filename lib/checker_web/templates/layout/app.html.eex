@@ -13,9 +13,6 @@
       <%= if @current_user do %>
         window.userID = <%= @current_user.id %>;
       <% end %>
-      <%= if <%= @game %> do %>
-        window.userID = <%= @game %>;
-      <% end %>
 
     </script>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">

@@ -1,5 +1,4 @@
-Show the room's name
-<%= @game %>
+Show the room's name <%= @game %>
 
 <div class="row">
   <div class="col">
@@ -9,3 +8,9 @@ Show the room's name
     </div>
   </div>
 </div>
+
+<script>
+  <%= if @game do %>
+    window.gameID = <%= @game %>;
+  <% end %>
+</script>
