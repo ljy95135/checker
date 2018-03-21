@@ -26,7 +26,8 @@ defmodule CheckerWeb.Router do
 
     get("/", PageController, :index)
     get("/game/:game", PageController, :game)
-
+    get("/rooms", PageController, :rooms)
+    
     resources("/users", UserController)
     post("/session", SessionController, :create)
     delete("/session", SessionController, :delete)

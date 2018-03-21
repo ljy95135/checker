@@ -1,0 +1,8 @@
+<div>
+   Room Name
+    <input type="text" name="roomName" placeholder="Enter name" >
+  </div>
+  <br/>
+  <div>
+    <button class="btn btn-primary">Create Room</button>
+  </div>

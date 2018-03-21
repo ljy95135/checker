@@ -8,4 +8,9 @@ defmodule CheckerWeb.PageController do
   def game(conn, params) do
     render(conn, "game.html", game: params["game"])
   end
+
+  def rooms(conn, params) do
+    render(conn, "rooms.html")
+  end
+
 end
