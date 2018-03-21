@@ -58,8 +58,8 @@ function init() {
           .receive('error', (info) => {
             console.log("error new game", info);
           })
+        // window.location = "/game/" + xx;
       }
-      // window.location = "/game/" + xx;
     });
   }
 
@@ -85,6 +85,8 @@ function init() {
       });
   }
 }
+
+
 
 function test_login(){
   if(window.userID){
