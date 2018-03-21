@@ -63,8 +63,12 @@ function init() {
     });
   }
 
+  // checker board part
   let root = document.getElementById('root');
   if (root) {
+    // we are at /game/game_id
+    // and we should build the game channel.
+    
     run_checker(root);
   }
 

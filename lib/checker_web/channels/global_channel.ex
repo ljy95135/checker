@@ -2,6 +2,9 @@ defmodule CheckerWeb.GlobalChannel do
   require Logger
   use CheckerWeb, :channel
 
+  # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
+  # We learn how this attribution arrange the code structure.
+
   def join("global", payload, socket) do
     # Logger.debug(payload)
 
