@@ -1,0 +1,5 @@
+{:ok, pid} = Checker.Room.Supervisor.create_game(1)
+
+x = %CheckerWeb.CheckerGame{}
+
+CheckerWeb.CheckerGame.handle_call(:get_data, nil, x)

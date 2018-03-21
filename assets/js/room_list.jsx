@@ -45,5 +45,5 @@ class RoomList extends React.Component {
 
 function RoomInfomation(params) {
   // console.log(params.room.id);
-  return (<li>{params.room.id}</li>);
+  return (<li>{params.room.id}|red:|black:|</li>);
 }
