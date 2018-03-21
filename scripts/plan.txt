@@ -1,0 +1,25 @@
+Plan
+
+CurrentRoom List:
+  need to show all infomations red black
+  need to add join Button
+  after joining:
+    go to the correct game room
+    build the right channel with game
+    can send infomation and let the Genserver know this is sent by red|black user
+
+GameLogic:
+  User can send his next step on his/her turn
+  Server checked the move
+  Let all socket get updated using broadcast
+  Finish the game's rules
+
+Documents
+
+Alternatives:
+  Add css
+  Add more secure things
+  some bonus implementation:
+    DB store the result of the game
+    stroe steps
+    etc...

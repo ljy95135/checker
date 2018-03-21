@@ -1,6 +1,9 @@
 defmodule Checker.Room.Supervisor do
   use Supervisor
 
+  # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
+  # We learn how this attribution arrange the code structure.
+
   def start_link, do: Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do

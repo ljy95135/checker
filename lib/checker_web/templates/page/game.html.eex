@@ -1,2 +1,11 @@
 Show the room's name
 <%= @game %>
+
+<div class="row">
+  <div class="col">
+    <h1>Checker</h1>
+    <div id="root">
+      <p>Please Login first and join the room.</p>
+    </div>
+  </div>
+</div>

@@ -25,3 +25,5 @@ GenServer.call(pid, {:join, 3, pid})
 
 {:ok, pid} = Checker.Room.Supervisor.create_game(3)
 Checker.Room.Supervisor.current_games
+ref_1 = CheckerWeb.CheckerGame.ref(1)
+GenServer.call(ref_1, :get_data)

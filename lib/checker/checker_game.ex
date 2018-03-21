@@ -11,6 +11,11 @@ defmodule CheckerWeb.CheckerGame do
             over: false,
             winner: nil
 
+  # pid is the channel pid which should be monitored.
+  def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})
+
+  def get_data(game_id), do: try_call(game_id, :get_data)
+
   def start_link(id) do
     GenServer.start_link(__MODULE__, id, name: ref(id))
   end
@@ -35,6 +40,7 @@ defmodule CheckerWeb.CheckerGame do
   defp add_player(%__MODULE__{black: nil} = game, user_id), do: %{game | black: user_id}
   defp add_player(game, user_id), do: %{game | viewers: [user_id | game.viewers]}
 
+  # pid is channel's pid
   def handle_call({:join, user_id, pid}, _from, game) do
     cond do
       Enum.member?([game.red, game.black], user_id) ->

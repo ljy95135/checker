@@ -58,31 +58,39 @@ function init() {
           .receive('error', (info) => {
             console.log("error new game", info);
           })
+        // window.location = "/game/" + xx;
       }
-      // window.location = "/game/" + xx;
     });
   }
 
+  // checker board part
   let root = document.getElementById('root');
   if (root) {
+    // we are at /game/game_id
+    // and we should build the game channel.
+    
     run_checker(root);
   }
 
   // current_games
-  channel.push('current_games')
-    .receive('ok', (payload) => {
-      console.log("get current_games", payload);
-      let current_rooms = payload.games;
-      // put list render after receive.
-      let rooms_root = document.getElementById('current_room_list')
-      if (rooms_root) {
-        run_room_list(rooms_root, current_rooms);
-      }
-    })
-    .receive('error', (info) => {
-      console.log("error current_games", info);
-    });
+  if (document.getElementById('current_room_list')){
+    channel.push('current_games')
+      .receive('ok', (payload) => {
+        console.log("get current_games", payload);
+        let current_rooms = payload.games;
+        // put list render after receive.
+        let rooms_root = document.getElementById('current_room_list');
+        if (rooms_root) {
+          run_room_list(rooms_root, current_rooms);
+        }
+      })
+      .receive('error', (info) => {
+        console.log("error current_games", info);
+      });
+  }
 }
+
+
 
 function test_login(){
   if(window.userID){
