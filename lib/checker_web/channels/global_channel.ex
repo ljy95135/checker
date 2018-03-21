@@ -18,7 +18,12 @@ defmodule CheckerWeb.GlobalChannel do
 
   def handle_in("new_game", params, socket) do
     game_id = params["game_name"]
-    Checker.Room.Supervisor.create_game(game_id)
+    {:ok, pid} = Checker.Room.Supervisor.create_game(game_id)
+
+    # Change the game's red to this player
+    red_user_id = socket.assigns.user_id
+    Logger.debug(red_user_id)
+    GenServer.call(pid, {:join, red_user_id, pid})
 
     {:reply, {:ok, %{game_id: game_id}}, socket}
   end

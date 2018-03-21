@@ -24,10 +24,11 @@ import {
 
 // import socket from "./socket"
 function init() {
-  // create socket
+  // create socket only when there is user_id
   let socket = new Socket("/socket", {
     params: {
-      token: window.userToken
+      token: window.userToken,
+      user_id: window.userID
     }
   });
   socket.connect();
@@ -83,5 +84,11 @@ function init() {
     });
 }
 
+function test_login(){
+  if(window.userID){
+    init();
+  }
+}
 
-$(init);
+
+$(test_login);

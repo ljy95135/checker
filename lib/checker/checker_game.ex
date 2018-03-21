@@ -1,7 +1,7 @@
 defmodule CheckerWeb.CheckerGame do
   use GenServer
   # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
-  # Server rules for checker
+  # We learn how this attribution arrange the code structure.
 
   defstruct id: nil,
             red: nil,
@@ -15,13 +15,13 @@ defmodule CheckerWeb.CheckerGame do
     GenServer.start_link(__MODULE__, id, name: ref(id))
   end
 
-  defp ref(id), do: {:global, {:game, id}}
+  def ref(id), do: {:global, {:game, id}}
 
   def init(id) do
     {:ok, %__MODULE__{id: id}}
   end
 
-  defp try_call(id, message) do
+  def try_call(id, message) do
     case GenServer.whereis(ref(id)) do
       nil ->
         {:error, "Game does not exist"}

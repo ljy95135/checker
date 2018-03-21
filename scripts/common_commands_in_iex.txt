@@ -2,4 +2,26 @@
 
 x = %CheckerWeb.CheckerGame{}
 
+// Just something like {:get_data, _xx, _pid}
 CheckerWeb.CheckerGame.handle_call(:get_data, nil, x)
+// return
+{:reply, reply, new_state}
+{:noreply, new_state}
+
+
+
+// When you call a function in a gen_server module, the function is not executed in the gen_server process.
+// It is executed in the caller process.
+
+GenServer.call(pid, :get_data)
+user_id = 1
+GenServer.call(pid, {:join, 1, pid})
+GenServer.call(pid, {:join, 2, pid})
+GenServer.call(pid, {:join, 3, pid})
+
+
+{:join, user_id, pid}
+
+
+{:ok, pid} = Checker.Room.Supervisor.create_game(3)
+Checker.Room.Supervisor.current_games

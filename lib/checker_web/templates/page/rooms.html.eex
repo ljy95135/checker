@@ -11,7 +11,7 @@
   <div class="col">
     <h1>Current Rooms</h1>
     <div id="current_room_list">
-      <p>React app not loaded...</p>
+      <p>Please login</p>
     </div>
   </div>
 </div>

@@ -25,7 +25,8 @@ defmodule CheckerWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(params, socket) do
-    user_id = params["id"]
+    user_id = params["user_id"]
+    Logger.debug(user_id)
     {:ok, assign(socket, :user_id, user_id)}
   end
 
