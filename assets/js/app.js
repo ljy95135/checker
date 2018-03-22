@@ -50,11 +50,14 @@ function init() {
       let xx = $('#room-input').val();
       // new_game
       if (xx) {
-        let params = {game_name: xx};
+        let params = {
+          game_name: xx
+        };
         console.log(params);
         channel.push('new_game', params)
           .receive('ok', (payload) => {
             console.log("successful new game", payload);
+            location.reload(true);
             window.location = "/game/" + xx;
           })
           .receive('error', (info) => {
@@ -79,26 +82,38 @@ function init() {
         console.log("Unable to join game", resp)
       });
 
-    // get the game state
     game_channel.push('game:get_data', {})
       .receive('ok', (payload) => {
+        // use the infomation about the game_channel
+        // do the giveup button for users
+        // Button should be implemented
+        // every user will channel.on that information.
         console.log("See the game state", payload);
-          })
+        let user_id = window.userID;
+        let game_state = payload.game_state;
+        if (user_id == game_state.red) {
+          // User is red
+        } else if (user_id == game_state.black) {
+          // User is black
+        } else if (user_id in game_state.viewers) {
+          // User is viewer
+        } else {
+          alert("Please join the room at first!");
+        }
+
+        run_checker(root);
+      })
       .receive('error', (info) => {
         console.log("Error to see game data", info);
       });
 
-    // use the infomation about the game_channel
 
-    // do the giveup button for users
 
-    // Button should be implemented
-    // every user will channel.on that information.
-    run_checker(root);
+
   }
 
   // current_games
-  if (document.getElementById('current_room_list')){
+  if (document.getElementById('current_room_list')) {
     channel.push('current_games')
       .receive('ok', (payload) => {
         console.log("get current_games", payload);
@@ -117,8 +132,8 @@ function init() {
 
 
 
-function test_login(){
-  if(window.userID){
+function test_login() {
+  if (window.userID) {
     init();
   }
 }
