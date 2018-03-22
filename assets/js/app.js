@@ -16,6 +16,7 @@ import run_room_list from "./room_list";
 import {
   Socket
 } from "phoenix";
+import $ from "jquery";
 
 // Import local files
 //
@@ -54,6 +55,7 @@ function init() {
         channel.push('new_game', params)
           .receive('ok', (payload) => {
             console.log("successful new game", payload);
+            window.location = "/game/" + xx;
           })
           .receive('error', (info) => {
             console.log("error new game", info);
@@ -68,7 +70,7 @@ function init() {
   if (root) {
     // we are at /game/game_id
     // and we should build the game channel.
-    let game_channel = socket.channel("game:"+window.gameID, {});
+    let game_channel = socket.channel("game:" + window.gameID, {});
     game_channel.join()
       .receive("ok", resp => {
         console.log("Joined Game successfully", resp)
@@ -86,7 +88,12 @@ function init() {
         console.log("Error to see game data", info);
       });
 
+    // use the infomation about the game_channel
 
+    // do the giveup button for users
+
+    // Button should be implemented
+    // every user will channel.on that information.
     run_checker(root);
   }
 
@@ -99,7 +106,7 @@ function init() {
         // put list render after receive.
         let rooms_root = document.getElementById('current_room_list');
         if (rooms_root) {
-          run_room_list(rooms_root, current_rooms, channel);
+          run_room_list(rooms_root, current_rooms, socket);
         }
       })
       .receive('error', (info) => {

@@ -4,8 +4,8 @@ import {
   Button
 } from 'reactstrap';
 
-export default function run_room_list(root, current_rooms, channel) {
-  ReactDOM.render(<RoomList rooms={current_rooms} channel={channel}/>, root);
+export default function run_room_list(root, current_rooms, socket) {
+  ReactDOM.render(<RoomList rooms={current_rooms} socket={socket}/>, root);
 }
 
 class RoomList extends React.Component {
@@ -15,11 +15,19 @@ class RoomList extends React.Component {
   }
 
   handleJoin(room_id) {
-    // this.props.channel
-    let user_id = window.userID
+    let socket = this.props.socket;
+    let user_id = window.userID;
     // console.log(room_id);
     // use channel join with your user_id
-    
+    let game_channel = socket.channel("game:" + room_id, {});
+    game_channel.join()
+      .receive("ok", resp => {
+        console.log("Joined Game successfully", resp)
+      })
+      .receive("error", resp => {
+        console.log("Unable to join game", resp)
+      });
+    window.location = "/game/" + room_id;
   }
 
   render() {
