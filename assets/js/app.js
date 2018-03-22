@@ -42,7 +42,7 @@ function init() {
     .receive("error", resp => {
       console.log("Unable to join", resp)
     });
-  console.log("Join it", channel);
+  // console.log("Join it", channel);
 
   if (document.getElementById('create-room-page')) {
     $('#create-room-button').click(() => {
@@ -68,7 +68,25 @@ function init() {
   if (root) {
     // we are at /game/game_id
     // and we should build the game channel.
-    
+    let game_channel = socket.channel("game:"+window.gameID, {});
+    game_channel.join()
+      .receive("ok", resp => {
+        console.log("Joined Game successfully", resp)
+      })
+      .receive("error", resp => {
+        console.log("Unable to join game", resp)
+      });
+
+    // get the game state
+    game_channel.push('game:get_data', {})
+      .receive('ok', (payload) => {
+        console.log("See the game state", payload);
+          })
+      .receive('error', (info) => {
+        console.log("Error to see game data", info);
+      });
+
+
     run_checker(root);
   }
 
@@ -81,7 +99,7 @@ function init() {
         // put list render after receive.
         let rooms_root = document.getElementById('current_room_list');
         if (rooms_root) {
-          run_room_list(rooms_root, current_rooms);
+          run_room_list(rooms_root, current_rooms, channel);
         }
       })
       .receive('error', (info) => {

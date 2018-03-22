@@ -25,7 +25,7 @@ defmodule CheckerWeb.GlobalChannel do
     case Checker.Room.Supervisor.create_game(game_id) do
       {:ok, pid} ->
         red_user_id = socket.assigns.user_id
-        Logger.debug(red_user_id)
+        Logger.debug("red user id:", red_user_id)
         GenServer.call(pid, {:join, red_user_id, pid})
         {:reply, {:ok, %{game_id: game_id}}, socket}
 

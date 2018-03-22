@@ -11,6 +11,6 @@ Show the room's name <%= @game %>
 
 <script>
   <%= if @game do %>
-    window.gameID = <%= @game %>;
+    window.gameID = "<%= @game %>";
   <% end %>
 </script>

@@ -1,4 +1,4 @@
-defmodule Battleship.GameChannel do
+defmodule CheckerWeb.GameChannel do
   @moduledoc """
   Game channel
   """
@@ -27,6 +27,6 @@ defmodule Battleship.GameChannel do
   def handle_in("game:get_data", _message, socket) do
     # user_id = socket.assigns.user_id
     game_id = socket.assigns.game_id
-    CheckerWeb.CheckerGame.get_data(game_id)
+    {:reply, {:ok, %{game_state: CheckerWeb.CheckerGame.get_data(game_id)}}, socket}
   end
 end
