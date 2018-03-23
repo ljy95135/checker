@@ -92,8 +92,8 @@ function init() {
         console.log("See the game state", payload);
         // let user_id = window.userID;
         let game_state = payload.game_state;
-        // Update user info function
-        update_user_info(game_state);
+        // Update user info function &&n resign button
+        update_user_info(game_state, channel);
 
         run_checker(root);
       })
@@ -102,7 +102,8 @@ function init() {
       });
 
       // console.log("on", msg)
-      game_channel.on("update_user_info", msg => {update_user_info(msg.game)});
+      game_channel.on("update_user_info", msg => {update_user_info(msg.game, channel)});
+      game_channel.on("game_result", (msg) => {end_game(msg.loser)});
   }
 
   // current_games
@@ -124,11 +125,27 @@ function init() {
   }
 }
 
-function update_user_info(game_state){
-  // console.log("see state to update user info", game_state);
+// Based on who you are, make change after a game is over
+function end_game(loser){
   let user_id = window.userID;
+  if (user_id == loser) {
+    // You lose
+    alert("You lose the game.")
+  }
+  else {
+    // winner and viewer
+    alert("user "+ loser + " losed in the game. It's a nice game!");
+    window.location = "/rooms";
+  }
+}
+
+// user info and resign_button
+function update_user_info(game_state, global_channel){
+  // console.log("see state to update user info", game_state);
+  let user_id = window.userID; // it is number (bad idea but I am lazy to change.)
   if (user_id == game_state.red) {
     // User is red
+    $("#resign_btn").click({global_channel: global_channel, game_id: game_state.id}, resign);
     let black = game_state.black;
     if (black) {
       $("#board_info").text("You are the red player. Your opponent's user id is " + black);
@@ -138,6 +155,7 @@ function update_user_info(game_state){
     }
   } else if (user_id == game_state.black) {
     // User is black
+    $("#resign_btn").click({global_channel: global_channel, game_id: game_state.id}, resign);
     let red = game_state.red;
     if (red) {
       $("#board_info").text("You are the black player. Your opponent's user id is " + red);
@@ -145,19 +163,38 @@ function update_user_info(game_state){
     else {
       $("#board_info").text("You are the black player. Please wait for your opponent.");
     }
-  } else if (user_id in game_state.viewers) {
+    // user_id+"" in game_state.viewers wrong! use in for dict
+  } else if (game_state.viewers.indexOf(user_id+"") != -1) {
     // User is viewer
     let red = game_state.red;
     let black = game_state.black;
     if (red && black){
-      $("#board_info").text("red player's user id is " + red + " and black player's user id is " + black + ". Enjoy!");
+      $("#board_info").text("You are a viewer, red player's user id is " + red + " and black player's user id is " + black + ". Enjoy!");
     }
     else {
       $("#board_info").text("Please wait until two players join.");
     }
+    // remove resign button
+    // console.log("Going to remove button!")
+    $("#resign_btn").remove();
   } else {
+    // console.log(red);
     alert("Please join the room at first!");
   }
+}
+
+// resign button
+// global_channel to kill the Genserver by game_id and user
+function resign(ev) {
+  let user_id = window.userID;
+  let channel = ev.data.global_channel;
+  // only the player has button.
+  channel.push("resign", {user_id: user_id, game_id: ev.data.game_id})
+    .receive('ok', (msg) => {
+      // nothing need to do in fact.
+      window.location = "/rooms";
+      // alert("You resigned and the game ended. Nice game!");
+    })
 }
 
 function test_login() {

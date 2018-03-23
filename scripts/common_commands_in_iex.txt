@@ -9,6 +9,9 @@ CheckerWeb.CheckerGame.handle_call(:get_data, nil, x)
 {:noreply, new_state}
 
 
+server = CheckerWeb.CheckerGame.ref(1)
+Elixir.GenServer.stop(server)
+Supervisor.terminate_child(__MODULE__, 1) // not work
 
 // When you call a function in a gen_server module, the function is not executed in the gen_server process.
 // It is executed in the caller process.

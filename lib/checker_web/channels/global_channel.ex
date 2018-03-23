@@ -19,6 +19,14 @@ defmodule CheckerWeb.GlobalChannel do
     {:reply, {:ok, %{games: Checker.Room.Supervisor.current_games()}}, socket}
   end
 
+  def handle_in("resign", params, socket) do
+    # do some thing to end genserver
+    user_id = params["user_id"]
+    game_id = params["game_id"]
+    CheckerWeb.CheckerGame.resign_game(game_id, user_id)
+    {:reply, {:ok, %{}}, socket}
+  end
+
   def handle_in("broadcast_current_games", _params, socket) do
     broadcast_current_games
     {:noreply, socket}

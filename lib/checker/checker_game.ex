@@ -14,6 +14,13 @@ defmodule CheckerWeb.CheckerGame do
   # pid is the channel pid which should be monitored.
   def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})
 
+  def resign_game(game_id, user_id) do
+    server = ref(game_id)
+    Elixir.GenServer.stop(server)
+    # send broadcast to all connect to game:id
+    send_broadcast_game_result(game_id, user_id)
+  end
+
   def get_data(game_id), do: try_call(game_id, :get_data)
 
   def start_link(id) do
@@ -34,6 +41,10 @@ defmodule CheckerWeb.CheckerGame do
       game ->
         GenServer.call(game, message)
     end
+  end
+
+  def send_broadcast_game_result(game_id, loser_id) do
+    CheckerWeb.Endpoint.broadcast("game:" <> game_id, "game_result", %{"loser" => loser_id})
   end
 
   def send_braodcast_update_user_info(game) do

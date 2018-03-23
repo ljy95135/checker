@@ -3,6 +3,7 @@
     <h1>Checker</h1>
     <p>Hi <%= @current_user.name %>.</p>
     <p id="board_info"></p>
+    <button id="resign_btn">Resign</button>
 
     <div id="root">
       <p>Please Login first and join the room.</p>
