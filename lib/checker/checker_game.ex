@@ -14,6 +14,17 @@ defmodule CheckerWeb.CheckerGame do
   # pid is the channel pid which should be monitored.
   def join(id, player_id, pid), do: try_call(id, {:join, player_id, pid})
 
+  def resign_game(game_id, user_id) do
+    server = ref(game_id)
+    Elixir.GenServer.stop(server)
+    # send broadcast to all connect to game:id
+    send_broadcast_game_result(game_id, user_id)
+  end
+
+  def check_validation(user_id, game_id, step) do
+    # check all rules.
+  end
+
   def get_data(game_id), do: try_call(game_id, :get_data)
 
   def start_link(id) do
@@ -36,9 +47,32 @@ defmodule CheckerWeb.CheckerGame do
     end
   end
 
-  defp add_player(%__MODULE__{red: nil} = game, user_id), do: %{game | red: user_id}
-  defp add_player(%__MODULE__{black: nil} = game, user_id), do: %{game | black: user_id}
-  defp add_player(game, user_id), do: %{game | viewers: [user_id | game.viewers]}
+  def send_broadcast_game_result(game_id, loser_id) do
+    CheckerWeb.Endpoint.broadcast("game:" <> game_id, "game_result", %{"loser" => loser_id})
+  end
+
+  def send_braodcast_update_user_info(game) do
+    game_id = game.id
+    CheckerWeb.Endpoint.broadcast("game:" <> game_id, "update_user_info", %{"game" => game})
+  end
+
+  defp add_player(%__MODULE__{red: nil} = game, user_id) do
+    new_game = %{game | red: user_id}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
+
+  defp add_player(%__MODULE__{black: nil} = game, user_id) do
+    new_game = %{game | black: user_id}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
+
+  defp add_player(game, user_id) do
+    new_game = %{game | viewers: [user_id | game.viewers]}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
 
   # pid is channel's pid
   def handle_call({:join, user_id, pid}, _from, game) do

@@ -19,6 +19,19 @@ defmodule CheckerWeb.GlobalChannel do
     {:reply, {:ok, %{games: Checker.Room.Supervisor.current_games()}}, socket}
   end
 
+  def handle_in("resign", params, socket) do
+    # do some thing to end genserver
+    user_id = params["user_id"]
+    game_id = params["game_id"]
+    CheckerWeb.CheckerGame.resign_game(game_id, user_id)
+    {:reply, {:ok, %{}}, socket}
+  end
+
+  def handle_in("broadcast_current_games", _params, socket) do
+    broadcast_current_games
+    {:noreply, socket}
+  end
+
   def handle_in("new_game", params, socket) do
     game_id = params["game_name"]
 
@@ -27,6 +40,7 @@ defmodule CheckerWeb.GlobalChannel do
         # red_user_id = socket.assigns.user_id
         # Logger.debug("red user id:", red_user_id)
         # GenServer.call(pid, {:join, red_user_id, pid})
+
         {:reply, {:ok, %{game_id: game_id}}, socket}
 
       {:error, info} ->
@@ -34,8 +48,16 @@ defmodule CheckerWeb.GlobalChannel do
     end
   end
 
+  # maybe not need here
+  def send_braodcast_update_current_rooms(game) do
+    # game -> new list: games
+    games = Checker.Room.Supervisor.current_games()
+    games = [game | games]
+    CheckerWeb.Endpoint.broadcast("global", "update_current_rooms", %{"games" => games})
+  end
+
   def broadcast_current_games do
-    CheckerWeb.Endpoint.broadcast("global", "update_games", %{
+    CheckerWeb.Endpoint.broadcast("global", "update_current_rooms", %{
       games: Checker.Room.Supervisor.current_games()
     })
   end
