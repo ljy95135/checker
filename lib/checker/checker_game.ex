@@ -21,6 +21,10 @@ defmodule CheckerWeb.CheckerGame do
     send_broadcast_game_result(game_id, user_id)
   end
 
+  def check_validation(user_id, game_id, step) do
+    # check all rules.
+  end
+
   def get_data(game_id), do: try_call(game_id, :get_data)
 
   def start_link(id) do

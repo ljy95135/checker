@@ -29,4 +29,18 @@ defmodule CheckerWeb.GameChannel do
     game_id = socket.assigns.game_id
     {:reply, {:ok, %{game_state: CheckerWeb.CheckerGame.get_data(game_id)}}, socket}
   end
+
+  def handle_in("game:update_border", message, socket) do
+    user_id = socket.assigns.user_id
+    game_id = socket.assigns.game_id
+    step = message["next_step"]
+
+    case CheckerWeb.CheckerGame.check_validation(user_id, game_id, step) do
+      {:ok, new_state} ->
+        {:reply, {:ok, %{state: new_state}}, socket}
+
+      {:error, info} ->
+        {:reply, {:error, %{info: "invalid step."}}, socket}
+    end
+  end
 end
