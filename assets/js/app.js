@@ -100,8 +100,8 @@ function init() {
         } else {
           alert("Please join the room at first!");
         }
-
-        run_checker(root);
+        console.log("gane state!",game_state);
+        run_checker(root, game_state);
       })
       .receive('error', (info) => {
         console.log("Error to see game data", info);
