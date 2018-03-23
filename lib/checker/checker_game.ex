@@ -36,9 +36,28 @@ defmodule CheckerWeb.CheckerGame do
     end
   end
 
-  defp add_player(%__MODULE__{red: nil} = game, user_id), do: %{game | red: user_id}
-  defp add_player(%__MODULE__{black: nil} = game, user_id), do: %{game | black: user_id}
-  defp add_player(game, user_id), do: %{game | viewers: [user_id | game.viewers]}
+  def send_braodcast_update_user_info(game) do
+    game_id = game.id
+    CheckerWeb.Endpoint.broadcast("game:" <> game_id, "update_user_info", %{"game" => game})
+  end
+
+  defp add_player(%__MODULE__{red: nil} = game, user_id) do
+    new_game = %{game | red: user_id}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
+
+  defp add_player(%__MODULE__{black: nil} = game, user_id) do
+    new_game = %{game | black: user_id}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
+
+  defp add_player(game, user_id) do
+    new_game = %{game | viewers: [user_id | game.viewers]}
+    send_braodcast_update_user_info(new_game)
+    new_game
+  end
 
   # pid is channel's pid
   def handle_call({:join, user_id, pid}, _from, game) do

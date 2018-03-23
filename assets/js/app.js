@@ -56,8 +56,9 @@ function init() {
         console.log(params);
         channel.push('new_game', params)
           .receive('ok', (payload) => {
-            console.log("successful new game", payload);
-            location.reload(true);
+            // console.log("successful new game", payload);
+            // need to ask glabal make a broadcast
+            channel.push("broadcast_current_games", {});
             window.location = "/game/" + xx;
           })
           .receive('error', (info) => {
@@ -89,17 +90,10 @@ function init() {
         // Button should be implemented
         // every user will channel.on that information.
         console.log("See the game state", payload);
-        let user_id = window.userID;
+        // let user_id = window.userID;
         let game_state = payload.game_state;
-        if (user_id == game_state.red) {
-          // User is red
-        } else if (user_id == game_state.black) {
-          // User is black
-        } else if (user_id in game_state.viewers) {
-          // User is viewer
-        } else {
-          alert("Please join the room at first!");
-        }
+        // Update user info function
+        update_user_info(game_state);
 
         run_checker(root);
       })
@@ -107,9 +101,8 @@ function init() {
         console.log("Error to see game data", info);
       });
 
-
-
-
+      // console.log("on", msg)
+      game_channel.on("update_user_info", msg => {update_user_info(msg.game)});
   }
 
   // current_games
@@ -121,6 +114,7 @@ function init() {
         // put list render after receive.
         let rooms_root = document.getElementById('current_room_list');
         if (rooms_root) {
+          channel.on("update_current_rooms", (msg) => {run_room_list(rooms_root, msg.games, socket);})
           run_room_list(rooms_root, current_rooms, socket);
         }
       })
@@ -130,7 +124,41 @@ function init() {
   }
 }
 
-
+function update_user_info(game_state){
+  // console.log("see state to update user info", game_state);
+  let user_id = window.userID;
+  if (user_id == game_state.red) {
+    // User is red
+    let black = game_state.black;
+    if (black) {
+      $("#board_info").text("You are the red player. Your opponent's user id is " + black);
+    }
+    else {
+      $("#board_info").text("You are the red player. Please wait for your opponent.");
+    }
+  } else if (user_id == game_state.black) {
+    // User is black
+    let red = game_state.red;
+    if (red) {
+      $("#board_info").text("You are the black player. Your opponent's user id is " + red);
+    }
+    else {
+      $("#board_info").text("You are the black player. Please wait for your opponent.");
+    }
+  } else if (user_id in game_state.viewers) {
+    // User is viewer
+    let red = game_state.red;
+    let black = game_state.black;
+    if (red && black){
+      $("#board_info").text("red player's user id is " + red + " and black player's user id is " + black + ". Enjoy!");
+    }
+    else {
+      $("#board_info").text("Please wait until two players join.");
+    }
+  } else {
+    alert("Please join the room at first!");
+  }
+}
 
 function test_login() {
   if (window.userID) {
