@@ -66,73 +66,129 @@ defmodule CheckerWeb.CheckerGame do
 
     x = Enum.at(game.board_state, from)
 
-    x_content =
-      cond do
-        x == "" ->
-          {:error, "There is no piece on this position."}
+    cond do
+      x == "" ->
+        {:error, "There is no piece on this position."}
 
-        String.at(x, 0) != game.turn ->
-          {:error, "This is not your piece."}
+      String.at(x, 0) != game.turn ->
+        {:error, "This is not your piece."}
 
-        user_id != game.red and user_id != game.black ->
-          {:error, "Not valid user for this game."}
+      user_id != game.red and user_id != game.black ->
+        {:error, "Not valid user for this game."}
 
-        user_id == game.red and game.turn == "b" ->
-          {:error, "Not your turn."}
+      user_id == game.red and game.turn == "b" ->
+        {:error, "Not your turn."}
 
-        user_id == game.black and game.turn == "r" ->
-          {:error, "Not your turn."}
+      user_id == game.black and game.turn == "r" ->
+        {:error, "Not your turn."}
 
-        true ->
-          # It's user's turn check the step
-          # The from pos is must user's piece.
-          # Try to check the value: position, eat piece, become queen
-          moves = move_positions(from, game.board_state)
+      true ->
+        # It's user's turn check the step
+        # The from pos is must user's piece.
+        # Try to check the value: position, eat piece, become queen
+        moves = move_positions(from, game.board_state)
 
-          # in move position has enemies!
-          jumps = jump_positions(from, game.board_state)
+        # in move position has enemies!
+        jumps = jump_positions(from, game.board_state)
 
-          cond do
-            check_occupied(to, game.board_state) ->
-              {:error, "Invalid step. Occupied."}
+        cond do
+          check_occupied(to, game.board_state) ->
+            {:error, "Invalid step. Occupied."}
 
-            # below have prerequisite: the to_pos is empty
-            # it's a move
-            to in moves ->
-              game = become_queen(to, game)
-              # handle update
-              try_call(game.id, {:update, game})
-              {:ok, game}
+          # below have prerequisite: the to_pos is empty
+          # it's a move
+          to in moves ->
+            # change turn: just reverse
+            game = change_turn(game, true)
+            # TODO
+            game = become_queen(from_pos, to_pos, game)
+            # handle update
+            try_call(game.id, {:update, game})
+            {:ok, game}
 
-            # it's a jump
-            # end_game_check only after jump
-            # need to use map for jumps, and may changed the turn
-            # TODO: use something like find in jump
-            to in jumps ->
-              # changed the turn
+          # it's a jump
+          # end_game_check only after jump
+          # need to use map for jumps, and may changed the turn
+          jump = Enum.find(jumps, &find_in_jumps(to, &1)) ->
+            # need to use the jump %{eat_pos: 5, is_continue: true, to_pos: 9}
+            # changed the turn (c<color>pos || r || b)
+            game = change_turn(game, false, jump)
+            # TODO: delete eat positions
+            game = delete_piece(to, jumps, game)
+            # make moves and perhaps become queen
+            game = become_queen(from_pos, to_pos, game)
+            # handle update
+            try_call(game.id, {:update, game})
 
-              # delete eat positions
-              game = delete_pieces(to, jumps, game)
-              # make moves and perhaps become queen
-              game = become_queen(to, game)
-              # handle update
-              try_call(game.id, {:update, game})
+            # if find game is end, open a new process to broadcast(wait a second)
+            # when channel recive state, check whether a winner at first
+            # then may send a win message to server, server will check
+            spawn(__MODULE__, :check_win, [game])
+            {:ok, game}
 
-              # if find game is end, open a new process to broadcast(wait a second)
-              # when channel recive state, check whether a winner at first
-              # then may send a win message to server, server will check
-              spawn(__MODULE__, :check_win, [game])
-              {:ok, game}
-
-            # cant move or jump to, invalid
-            true ->
-              {:error, "Invalid step. Can't reach"}
-          end
-      end
+          # cant move or jump to, invalid
+          true ->
+            {:error, "Invalid step. Can't reach"}
+        end
+    end
   end
 
-  # jump [(to, {eat_pos1, eat_pos_2}),...]
-  def delete_pieces(to, jump, game) do
+  # game dict
+  # jump_info like %{eat_pos: 5, is_continue: true, to_pos: 9}
+  # return new game
+  def change_turn(game, is_reverse, jump_info \\ nil) do
+    if is_reverse do
+      change_turn_reverse(game)
+    else
+      # based on jump_info changed to reverse or cb|r*
+      if jump_info.is_continue do
+        # change turn to "c" + "r|b"+ to_pos
+        # game_turn can be cr|b* or r|b
+        if String.length(game.turn) == 1 do
+          new_turn = "c" <> game.turn <> Integer.to_string(jump_info.to_pos)
+          %{game | turn: new_turn}
+        else
+          # from cr|b* to new cr|b*
+          new_turn = "c" <> String.at(game.turn, 1) <> Integer.to_string(jump_info.to_pos)
+          %{game | turn: new_turn}
+        end
+      else
+        # just like reverse
+        change_turn_reverse(game)
+      end
+    end
+  end
+
+  # game.turn "r" "b" "cr*" "cb*"
+  def change_turn_reverse(game) do
+    cond do
+      String.length(game.turn) == 1 ->
+        # just reverse
+        if game.turn == "r" do
+          %{game | turn: "b"}
+        else
+          %{game | turn: "r"}
+        end
+
+      true ->
+        # use second character to inverse
+        turn = String.at(game.turn, 1)
+
+        if turn == "r" do
+          %{game | turn: "b"}
+        else
+          %{game | turn: "r"}
+        end
+    end
+  end
+
+  # %{eat_pos: 5, is_continue: true, to_pos: 9}
+  def find_in_jumps(to_pos, jump_info) do
+    to_pos == jump_info.to_pos
+  end
+
+  # jump
+  def delete_piece(to, jump, game) do
     # find where the eat is and change the game dict.
   end
 
@@ -148,7 +204,8 @@ defmodule CheckerWeb.CheckerGame do
 
   # game is a dict
   # make the real position change by pos(to) here
-  def become_queen(pos, game) do
+  # from->"", to->"r|b|rq|bq"
+  def become_queen(from_pos, to_pos, game) do
     # if pos can be a queen, then return a new game
   end
 
