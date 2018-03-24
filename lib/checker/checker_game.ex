@@ -155,20 +155,37 @@ defmodule CheckerWeb.CheckerGame do
   # pos: int 0-31, board: list of 32 board unit
   # prerequisite: this must be right user's right piece
   # not care about the destination of whether has piece
-  def move_positions(pos, board) do
+  # sometimes need to check moves and need to use info: "bq" "rq" "r" "b"
+  def move_positions(pos, board, info \\ nil) do
     # return list of all valid move position
     x = Enum.at(board, pos)
     color = String.at(x, 0)
     len = String.length(x)
 
     cond do
-      color == 'r' ->
+      color == "r" ->
         # red moves
         red_moves(pos, len == 2)
 
-      color == 'b' ->
+      color == "b" ->
         # black moves
         black_moves(pos, len == 2)
+
+      true ->
+        # use to try can jump next time?
+        cond do
+          info == "bq" ->
+            black_moves(pos, true)
+
+          info == "rq" ->
+            red_moves(pos, true)
+
+          info == "r" ->
+            red_moves(pos, false)
+
+          info == "b" ->
+            black_moves(pos, false)
+        end
     end
   end
 
@@ -263,6 +280,7 @@ defmodule CheckerWeb.CheckerGame do
   # {is_continue: boolean, to: to_pos, eat: eat_pos} | nil | true
   def check_eat(x_pos, eat_pos, board, is_just_check) do
     # can eat?
+    # IO.puts(eat_pos)
     eat = Enum.at(board, eat_pos)
     x = Enum.at(board, x_pos)
 
@@ -299,7 +317,7 @@ defmodule CheckerWeb.CheckerGame do
               # as a get function
               cond do
                 # not go back
-                check_again(to_pos, board, eat_pos) ->
+                check_again(to_pos, board, eat_pos, x) ->
                   %{is_continue: true, to_pos: to_pos, eat_pos: eat_pos}
 
                 # cant jump second time
@@ -372,8 +390,8 @@ defmodule CheckerWeb.CheckerGame do
   # end
 
   # boolean
-  def check_again(to_pos, board, eaten_pos) do
-    alternative_moves = move_positions(to_pos, board)
+  def check_again(to_pos, board, eaten_pos, info) do
+    alternative_moves = move_positions(to_pos, board, info)
     alternative_moves = Enum.filter(alternative_moves, fn x -> x! = eaten_pos end)
     # [nil, true,...]
     results = Enum.map(alternative_moves, &check_eat(to_pos, &1, board, true))
@@ -442,10 +460,10 @@ defmodule CheckerWeb.CheckerGame do
   def handle_call({:join, user_id, pid}, _from, game) do
     cond do
       Enum.member?([game.red, game.black], user_id) ->
-        {:reply, {:ok, self}, game}
+        {:reply, {:ok, self()}, game}
 
       Enum.member?(game.viewers, user_id) ->
-        {:reply, {:ok, self}, game}
+        {:reply, {:ok, self()}, game}
 
       true ->
         Process.flag(:trap_exit, true)
@@ -453,7 +471,7 @@ defmodule CheckerWeb.CheckerGame do
 
         game = add_player(game, user_id)
 
-        {:reply, {:ok, self}, game}
+        {:reply, {:ok, self()}, game}
     end
   end
 
