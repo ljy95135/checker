@@ -100,7 +100,7 @@ defmodule CheckerWeb.CheckerGame do
           to in moves ->
             # change turn: just reverse
             game = change_turn(game, true)
-            # TODO: make the real move, perhaps change to queen
+            # make the real move, perhaps change to queen
             game = become_queen(from, to, game)
             # handle update
             try_call(game.id, {:update, game})
@@ -115,7 +115,7 @@ defmodule CheckerWeb.CheckerGame do
             game = change_turn(game, false, jump)
             # delete eat position
             game = delete_piece(jump, game)
-            # TODO: make the real move, perhaps change to queen
+            # make the real move, perhaps change to queen
             game = become_queen(from, to, game)
             # handle update
             try_call(game.id, {:update, game})
@@ -212,10 +212,40 @@ defmodule CheckerWeb.CheckerGame do
   end
 
   # game is a dict
+  # prerequisite:
+  #   from_pos is right (must have the piece),
+  #   to_pos is empty and jump or move is valid.
   # make the real position change by pos(to) here
   # from->"", to->"r|b|rq|bq"
   def become_queen(from_pos, to_pos, game) do
-    # if pos can be a queen, then return a new game
+    board = game.board_state
+    x = Enum.at(game.board_state, from_pos)
+    # change from_pos's to ""
+    board = change_list(board, from_pos, "")
+
+    # add piece at to_pos
+    board =
+      cond do
+        # queen length is 2
+        String.length(x) == 2 ->
+          # only need to move at to_pos
+          change_list(board, to_pos, x)
+
+        true ->
+          # maybe change to queen
+          cond do
+            x == "r" and to_pos < 4 ->
+              change_list(board, to_pos, "rq")
+
+            x == "b" and to_pos > 27 ->
+              change_list(board, to_pos, "bq")
+
+            true ->
+              change_list(board, to_pos, x)
+          end
+      end
+
+    %{game | board_state: board}
   end
 
   # pos: int 0-31, board: list of 32 board unit
