@@ -1,3 +1,12 @@
+CheckerWeb.CheckerGame.red_moves(0, false)
+CheckerWeb.CheckerGame.red_moves(0, true)
+CheckerWeb.CheckerGame.black_moves(0, true)
+
+Enum.filter([0, 1, 8, 9], &CheckerWeb.CheckerGame.pos_filter(&1, 1, 5))
+Enum.filter([8, 9], &CheckerWeb.CheckerGame.pos_filter(&1, 1, 5))
+Enum.filter([10, 11], &CheckerWeb.CheckerGame.pos_filter(&1, 1, 5))
+
+GenServer>>>>>>>>>>>>>>>>>>>>>>>
 {:ok, pid} = Checker.Room.Supervisor.create_game(1)
 
 x = %CheckerWeb.CheckerGame{}
