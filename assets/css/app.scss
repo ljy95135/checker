@@ -25,6 +25,28 @@
     background-size: 90%;
 }
 
+.redQueen {
+    background: url(/images/checkers-checker-red-king.svg) no-repeat center;
+    background-size: 90%;
+}
+
+.blackQueen {
+    background: url(/images/checkers-checker-black-king.svg) no-repeat center;
+    background-size: 90%;
+}
+
+
+.redqueenwhitehighlight {
+        background: url(/images/checkers-highlight-white.svg) no-repeat center,url(/images/checkers-checker-red-king.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
+
+.blackqueenwhitehighlight {
+        background: url(/images/checkers-highlight-white.svg) no-repeat center,url(/images/checkers-checker-black-king.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
 .redwhitehighlight {
 	background: url(/images/checkers-highlight-white.svg) no-repeat center,url(/images/checkers-checker-red.svg) no-repeat center;
     background-size: 110%,90%;

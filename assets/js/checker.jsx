@@ -13,11 +13,11 @@ class Checker extends React.Component {
     super(props);
     this.game_state = props.game_state;
     this.game_state.board_state = //this.game_state.borard_state;
-    ["b", "b", "b", "b", "b", "b", "b", "b",
-       "b", "", "", "", "", "", "b", "b", "", "", "", "", "r", "r", "r",
+    ["b", "b", "b", "b", "b", "b", "b", "",
+       "rq", "", "", "", "b", "b", "", "", "", "", "", "", "r", "r", "r",
        "r", "r", "r", "r", "r", "r", "r", "r", "r"
      ];
-    this.game_state.turn = 'b';
+    this.game_state.turn = 'r';
   }
   
 
@@ -57,6 +57,29 @@ class Checker extends React.Component {
 
       }
      }
+     if((turn == "r" && this.game_state.board_state[board_stateidx] == "rq") || 
+      (turn == "b" && this.game_state.board_state[board_stateidx] == "bq")){
+        if(row % 2 == 0) {
+          if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
+             return true;
+          if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == ""))
+             return true;
+          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+              return true;
+          if((board_stateidx + 5) >= 0 && (this.game_state.board_state[board_stateidx + 5] == ""))
+              return true;
+        }
+        else {
+           if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == ""))
+             return true;
+          if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
+             return true;
+          if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == ""))
+              return true;
+          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+              return true;
+        }
+     }
      return false;
   }
   render() {
@@ -88,6 +111,10 @@ function BoardCells(params) {
             cols.push(<div id = {stateidx} className = {canMove ? 'boardcell blackwhitehighlight' : 'boardcell blackSoldier' }>&nbsp;</div>)
           else if (params.game_state.board_state[stateidx] == "r")
             cols.push(<div id = {stateidx}  className = {canMove ? "boardcell redwhitehighlight" : "boardcell redSoldier" }>&nbsp;</div>)
+          else if (params.game_state.board_state[stateidx] == "rq")
+            cols.push(<div id = {stateidx}  className = {canMove ? "boardcell redqueenwhitehighlight" : "boardcell redQueen" }>&nbsp;</div>)
+          else if (params.game_state.board_state[stateidx] == "bq")
+            cols.push(<div id = {stateidx}  className = {canMove ? "boardcell blackqueenwhitehighlight" : "boardcell blackQueen" }>&nbsp;</div>)
           else
             cols.push(<div id = {stateidx} className = "boardcell">&nbsp;</div>)
           stateidx++;
@@ -101,6 +128,10 @@ function BoardCells(params) {
             cols.push(<div id = {stateidx} className = {canMove ? 'boardcell blackwhitehighlight' : 'boardcell blackSoldier' }>&nbsp;</div>)
           else if (params.game_state.board_state[stateidx] == "r")
             cols.push(<div id = {stateidx} className = {canMove ? "boardcell redwhitehighlight" : "boardcell redSoldier" }>&nbsp;</div>)
+           else if (params.game_state.board_state[stateidx] == "rq")
+            cols.push(<div id = {stateidx}  className = {canMove ? "boardcell redqueenwhitehighlight" : "boardcell redQueen" }>&nbsp;</div>)
+          else if (params.game_state.board_state[stateidx] == "bq")
+            cols.push(<div id = {stateidx}  className = {canMove ? "boardcell blackqueenwhitehighlight" : "boardcell blackQueen" }>&nbsp;</div>)
           else
             cols.push(<div id = {stateidx} className = "boardcell">&nbsp;</div>)
           stateidx++;
