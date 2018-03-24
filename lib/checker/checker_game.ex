@@ -202,8 +202,39 @@ defmodule CheckerWeb.CheckerGame do
   end
 
   # if it has winner, send broadcast, end GenServer
+  # do not care its return value
   def check_win(game) do
     # must wait a short time to make sure client has updated their view.
+    :timer.sleep(1000)
+
+    # anyone is winner?
+    # prerequisite: cant be both 0
+    black_count = Enum.count(game.board_state, &count_piece(&1, "b"))
+    red_count = Enum.count(game.board_state, &count_piece(&1, "r"))
+
+    cond do
+      black_count == 0 ->
+        game_over_for_win(game.id, game.red)
+
+      red_count == 0 ->
+        game_over_for_win(game.id, game.black)
+
+      # game continues
+      true ->
+        nil
+    end
+  end
+
+  # user id is always String in Server side
+  def game_over_for_win(id, winner) do
+    server = ref(id)
+    Elixir.GenServer.stop(server)
+    send_broadcast_game_with_winner(id, winner)
+  end
+
+  # color: "r"|"b"
+  def count_piece(item, color) do
+    item in [color, color <> "q"]
   end
 
   # (consider about non-empty)
@@ -488,7 +519,7 @@ defmodule CheckerWeb.CheckerGame do
   # boolean
   def check_again(to_pos, board, eaten_pos, info) do
     alternative_moves = move_positions(to_pos, board, info)
-    alternative_moves = Enum.filter(alternative_moves, fn x -> x! = eaten_pos end)
+    alternative_moves = alternative_moves -- [eaten_pos]
     # [nil, true,...]
     results = Enum.map(alternative_moves, &check_eat(to_pos, &1, board, true))
     # default fn: fn(x) -> x
@@ -519,6 +550,7 @@ defmodule CheckerWeb.CheckerGame do
   end
 
   def send_broadcast_game_with_winner(game_id, winner_id) do
+    CheckerWeb.Endpoint.broadcast("game:" <> game_id, "someone_win", %{"winner" => winner_id})
   end
 
   def send_broadcast_game_result(game_id, loser_id) do
@@ -548,8 +580,9 @@ defmodule CheckerWeb.CheckerGame do
     new_game
   end
 
-  # change turn, update board
-  def handle_call({:update, new_game}, _from, game) do
+  # update board
+  def handle_call({:update, new_game}, _from, _game) do
+    {:reply, nil, new_game}
   end
 
   # pid is channel's pid
