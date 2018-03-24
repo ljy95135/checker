@@ -9,7 +9,7 @@ defmodule CheckerWeb.CheckerGame do
             black: nil,
             viewers: [],
             turn: "r",
-            borard_state: [
+            board_state: [
               "b",
               "b",
               "b",
@@ -100,8 +100,8 @@ defmodule CheckerWeb.CheckerGame do
           to in moves ->
             # change turn: just reverse
             game = change_turn(game, true)
-            # TODO
-            game = become_queen(from_pos, to_pos, game)
+            # TODO: make the real move, perhaps change to queen
+            game = become_queen(from, to, game)
             # handle update
             try_call(game.id, {:update, game})
             {:ok, game}
@@ -113,10 +113,10 @@ defmodule CheckerWeb.CheckerGame do
             # need to use the jump %{eat_pos: 5, is_continue: true, to_pos: 9}
             # changed the turn (c<color>pos || r || b)
             game = change_turn(game, false, jump)
-            # TODO: delete eat positions
-            game = delete_piece(to, jumps, game)
-            # make moves and perhaps become queen
-            game = become_queen(from_pos, to_pos, game)
+            # delete eat position
+            game = delete_piece(jump, game)
+            # TODO: make the real move, perhaps change to queen
+            game = become_queen(from, to, game)
             # handle update
             try_call(game.id, {:update, game})
 
@@ -187,9 +187,18 @@ defmodule CheckerWeb.CheckerGame do
     to_pos == jump_info.to_pos
   end
 
-  # jump
-  def delete_piece(to, jump, game) do
-    # find where the eat is and change the game dict.
+  # jump like %{eat_pos: 5, is_continue: true, to_pos: 9}
+  def delete_piece(jump, game) do
+    # just change eat position to empty
+    new_board_state = change_list(game.board_state, jump.eat_pos, "")
+    %{game | board_state: new_board_state}
+  end
+
+  # prerequisite: not give wrong arguments
+  def change_list(list, pos, new_val) do
+    # len will be enough for get the rest
+    len = length(list)
+    Enum.slice(list, 0, pos) ++ [new_val] ++ Enum.slice(list, pos + 1, len)
   end
 
   # if it has winner, send broadcast, end GenServer
