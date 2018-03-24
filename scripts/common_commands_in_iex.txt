@@ -1,3 +1,23 @@
+CheckerWeb.CheckerGame.get_to_pos(0, 5, board)
+
+CheckerWeb.CheckerGame.get_to_pos_temp(0, 5)
+
+CheckerWeb.CheckerGame.move_positions(0, board)
+
+CheckerWeb.CheckerGame.jump_positions(0, board)
+import CheckerWeb.CheckerGame
+board =
+[
+  "b","b","b","b",
+  "b","r","b","b",
+  "b","","","b",
+  "","","r","",
+  "","","","",
+  "r","r","r","r",
+  "r","r","r","r",
+  "r","r","r","r"
+]
+
 CheckerWeb.CheckerGame.red_moves(0, false)
 CheckerWeb.CheckerGame.red_moves(0, true)
 CheckerWeb.CheckerGame.black_moves(0, true)
