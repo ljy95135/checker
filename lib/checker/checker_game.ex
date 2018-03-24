@@ -64,48 +64,66 @@ defmodule CheckerWeb.CheckerGame do
     from = step["from"]
     to = step["to"]
 
-    cond do
-      user_id != game.red and user_id != game.black ->
-        {:error, "Not valid user for this game."}
+    x = Enum.at(game.board_state, from)
 
-      user_id == game.red and game.turn == "b" ->
-        {:error, "Not your turn."}
+    x_content =
+      cond do
+        x == "" ->
+          {:error, "There is no piece on this position."}
 
-      user_id == game.black and game.turn == "r" ->
-        {:error, "Not your turn."}
+        String.at(x, 0) != game.turn ->
+          {:error, "This is not your piece."}
 
-      true ->
-        # It's user's turn check the step
-        # Try to check the value: position, eat piece, become queen
-        moves = move_positions(from, game.board_state)
-        jumps = jump_positions(from, game.board_state)
+        user_id != game.red and user_id != game.black ->
+          {:error, "Not valid user for this game."}
 
-        cond do
-          check_occupied(to) ->
-            {:error, "Invalid step."}
+        user_id == game.red and game.turn == "b" ->
+          {:error, "Not your turn."}
 
-          # below have prerequisite: the to_pos is empty
-          # it's a move
-          to in moves ->
-            game = become_queue(to, game)
-            # handle update
-            try_call(game.id, {:update, game})
-            {:ok, game}
+        user_id == game.black and game.turn == "r" ->
+          {:error, "Not your turn."}
 
-          # it's a jump
-          # end_game_check only after jump
-          to in jumps ->
-            game = become_queue(to, game)
-            # handle update
-            try_call(game.id, {:update, game})
+        true ->
+          # It's user's turn check the step
+          # The from pos is must user's piece.
+          # Try to check the value: position, eat piece, become queen
+          moves = move_positions(from, game.board_state)
+          jumps = jump_positions(from, game.board_state)
 
-            # if find game is end, open a new process to broadcast(wait a second)
-            # when channel recive state, check whether a winner at first
-            # then may send a win message to server, server will check
-            spawn(__MODULE__, :check_win, [game])
-            {:ok, game}
-        end
-    end
+          cond do
+            check_occupied(to) ->
+              {:error, "Invalid step."}
+
+            # below have prerequisite: the to_pos is empty
+            # it's a move
+            to in moves ->
+              game = become_queue(to, game)
+              # handle update
+              try_call(game.id, {:update, game})
+              {:ok, game}
+
+            # it's a jump
+            # end_game_check only after jump
+            # need to use map for jumps
+            to in jumps ->
+              # delete eat positions
+              game = delete_pieces(to, jump, game)
+              game = become_queue(to, game)
+              # handle update
+              try_call(game.id, {:update, game})
+
+              # if find game is end, open a new process to broadcast(wait a second)
+              # when channel recive state, check whether a winner at first
+              # then may send a win message to server, server will check
+              spawn(__MODULE__, :check_win, [game])
+              {:ok, game}
+          end
+      end
+  end
+
+  # jump [(to, {eat_pos1, eat_pos_2}),...]
+  def delete_pieces(to, jump, game) do
+    # find where the eat is and change the game dict.
   end
 
   # if it has winner, send broadcast, end GenServer
@@ -127,11 +145,12 @@ defmodule CheckerWeb.CheckerGame do
   def move_positions(pos, board) do
     # return list of all valid move position
     # Enum.at([], 1) -> xx
+    x = Enum.at(board, pos)
   end
 
   # pos: int 0-31, board: list of 32 board unit
   def jump_positions(pos, board) do
-    # return list of all valid jump
+    # return list of all (valid jump, eat position)
     # notice: can still jump after a jump!
   end
 
