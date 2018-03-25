@@ -4,19 +4,19 @@ import {
   Button
 } from 'reactstrap';
 
-export default function run_checker(root, game_state) {
-  ReactDOM.render(<Checker game_state={game_state} />, root);
+export default function run_checker(root, game_state, game_channel) {
+  ReactDOM.render(<Checker game_state={game_state}  game_channel = {game_channel}/>, root);
 }
 
 class Checker extends React.Component {
   constructor(props) {
     super(props);
     this.game_state = props.game_state;
-    this.game_state.board_state = //this.game_state.borard_state;
-    ["b", "b", "b", "b", "", "", "b", "b",
-       "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
-       "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
-     ];
+    this.game_state.board_state = this.game_state.borard_state;
+//    ["b", "b", "b", "b", "", "", "b", "b",
+  //     "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
+    //   "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
+    // ];
     this.game_state.turn = 'b';
     this.state = {
       clickedItem : -1,
