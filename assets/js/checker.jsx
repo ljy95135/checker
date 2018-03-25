@@ -357,9 +357,9 @@ function BoardCell(params){
   }
   else{
     if (params.validMoves.indexOf(params.idx) != -1)
-      return (<div className = "boardcell validMove">&nbsp;</div>);
+      return (<div className = "boardcell validMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx)}>&nbsp;</div>);
     if(params.killMoves.indexOf(params.idx) != -1)
-      return (<div className = "boardcell killMove">&nbsp;</div>);
+      return (<div className = "boardcell killMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx)}>&nbsp;</div>);
     
     if(params.current_elem == "b")
       return (<div className = {params.canMove ? (params.clicked ? 'boardcell blackyellowhighlight' :'boardcell blackwhitehighlight') : 'boardcell blackSoldier' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>);
