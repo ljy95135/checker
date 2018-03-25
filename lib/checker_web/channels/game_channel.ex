@@ -37,6 +37,8 @@ defmodule CheckerWeb.GameChannel do
 
     case CheckerWeb.CheckerGame.check_validation(user_id, game_id, step) do
       {:ok, new_state} ->
+        CheckerWeb.Endpoint.broadcast("game:" <> game_id, "someone_moves", %{"state" => new_state})
+
         {:reply, {:ok, %{state: new_state}}, socket}
 
       {:error, info} ->

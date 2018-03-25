@@ -92,7 +92,10 @@ function init() {
         console.log("From app.js: See the game state", payload);
         // let user_id = window.userID;
         let game_state = payload.game_state;
+
         run_checker(root, game_state, game_channel);
+        // run_checker(root, game_state);
+
         // Update user info function &&n resign button
         update_user_info(game_state, channel);
 

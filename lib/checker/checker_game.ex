@@ -55,11 +55,11 @@ defmodule CheckerWeb.CheckerGame do
   end
 
   # userid will be int
-  # assume step like [0, 2]
+  # assume step like {from: to:}
   # return the game_state: whole dict
   def check_validation(user_id, game_id, step) do
     # check all rules.
-    user_id = Integer.to_string(user_id)
+    # user_id = Integer.to_string(user_id)
     game = get_data(game_id)
     from = step["from"]
     to = step["to"]
