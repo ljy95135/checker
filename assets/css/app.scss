@@ -68,6 +68,16 @@
     background-size: 110%,90%;
 }
 
+.redqueenyellowhighlight {
+        background: url(/images/checkers-highlight-yellow.svg) no-repeat center,url(/images/checkers-checker-red-king.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
+.blackqueenyellowhighlight {
+        background: url(/images/checkers-highlight-yellow.svg) no-repeat center,url(/images/checkers-checker-black-king.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
 .validMove {
     background: url(/images/checkers-highlight-green.svg) no-repeat center;
     background-size: 90%;

@@ -13,11 +13,11 @@ class Checker extends React.Component {
     super(props);
     this.game_state = props.game_state;
     this.game_state.board_state = //this.game_state.borard_state;
-    ["b", "b", "b", "b", "b", "b", "b", "b",
-       "b", "b", "b", "b", "b", "", "", "", "b", "", "", "", "r",
+    ["b", "b", "b", "b", "", "", "b", "b",
+       "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
        "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
      ];
-    this.game_state.turn = 'r';
+    this.game_state.turn = 'b';
     this.state = {
       clickedItem : -1,
       validMoves: [],
@@ -27,70 +27,8 @@ class Checker extends React.Component {
   
 
   canMove(turn, board_stateidx) {
-    // if(board_stateidx < 0 || board_stateidx >= this.game_state.board_state.length)
-    //   return false;
-    // let row  = (board_stateidx)/4;
-    // if(turn == "r" && this.game_state.board_state[board_stateidx] == "r") {
-    //   if(row % 2 == 0) {
-    //     if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
-    //       return true;
-    //     if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == ""))
-    //       return true;
-  
-    //   }
-    //  else {
-    //     if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
-    //       return true;
-    //     if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == ""))
-    //       return true;
-
-    //   }
-    //  }
-    //  if(turn == "b" && this.game_state.board_state[board_stateidx] == "b") {
-    //   if(row % 2 != 0) {
-    //     if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == ""))
-    //       return true;
-    //     if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
-    //       return true;
-  
-    //   }
-    //  else {
-    //     if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
-    //       return true;
-    //     if((board_stateidx + 5) >= 0 && (this.game_state.board_state[board_stateidx + 5] == ""))
-    //       return true;
-
-    //   }
-    //  }
-    //  if((turn == "r" && this.game_state.board_state[board_stateidx] == "rq") || 
-    //   (turn == "b" && this.game_state.board_state[board_stateidx] == "bq")){
-    //     if(row % 2 == 0) {
-    //       if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
-    //          return true;
-    //       if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == ""))
-    //          return true;
-    //       if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
-    //           return true;
-    //       if((board_stateidx + 5) >= 0 && (this.game_state.board_state[board_stateidx + 5] == ""))
-    //           return true;
-    //     }
-    //     else {
-    //        if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == ""))
-    //          return true;
-    //       if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
-    //          return true;
-    //       if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == ""))
-    //           return true;
-    //       if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
-    //           return true;
-    //     }
-    //  }
-
-    // console.log(this.getValidMoves(turn, board_stateidx))
     let result = this.getValidMoves(turn, board_stateidx);
     return result.move.length > 0 || result.killMove.length > 0;
-    
-    //return false; 
   }
 
    highlightMoves(turn, board_stateidx) {
@@ -109,7 +47,7 @@ class Checker extends React.Component {
     let row  = Math.floor((board_stateidx)/4);
     if(turn == "r" && this.game_state.board_state[board_stateidx] == "r") {
       if(row % 2 == 0) {
-        if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") )
+        if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") && row -1 == Math.floor((board_stateidx-4)/4))
           move.push(board_stateidx - 4)
 
          if((board_stateidx - 4) >= 0 
@@ -120,27 +58,30 @@ class Checker extends React.Component {
           && this.game_state.board_state[board_stateidx - 9] == "")
           killMove.push(board_stateidx - 9)
 
-        if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == ""))
+        if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == "") && row - 1 == Math.floor((board_stateidx-3)/4))
           move.push(board_stateidx - 3)
 
         if((board_stateidx - 3) >= 0 
           && (this.game_state.board_state[board_stateidx - 3] == "b" 
               || this.game_state.board_state[board_stateidx - 3] == "bq")
           && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
+          && row - 2 == Math.floor((board_stateidx-7)/4)
           && this.game_state.board_state[board_stateidx - 7] == "")
+
           killMove.push(board_stateidx - 7)
 
         
   
       }
      else {
-        if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
+        if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") && row -1 == Math.floor((board_stateidx-4)/4))
           move.push(board_stateidx - 4)
 
         if((board_stateidx - 4) >= 0 
           && (this.game_state.board_state[board_stateidx - 4] == "b" 
               || this.game_state.board_state[board_stateidx - 4] == "bq")
           && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
+          && row - 2 == Math.floor((board_stateidx-7)/4)
           && this.game_state.board_state[board_stateidx - 7] == "")
           killMove.push(board_stateidx - 7)
 
@@ -160,17 +101,18 @@ class Checker extends React.Component {
      }
      if(turn == "b" && this.game_state.board_state[board_stateidx] == "b") {
       if(row % 2 != 0) {
-        if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == ""))
+        if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == "") && row + 1 == Math.floor((board_stateidx+3)/4))
           move.push(board_stateidx + 3);
 
         if((board_stateidx + 3) >= 0 
           && (this.game_state.board_state[board_stateidx + 3] == "r" 
               || this.game_state.board_state[board_stateidx + 3] == "rq")
           && (board_stateidx + 7) >=0 && (board_stateidx + 7) < this.game_state.board_state.length
+          && row + 2 == Math.floor((board_stateidx+7)/4)
           && this.game_state.board_state[board_stateidx + 7] == "")
           killMove.push(board_stateidx + 7)
 
-        if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+        if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
           move.push(board_stateidx + 4)
 
         if((board_stateidx + 4) >= 0 
@@ -180,17 +122,18 @@ class Checker extends React.Component {
           && row + 2 == Math.floor((board_stateidx + 9)/4)
           && this.game_state.board_state[board_stateidx + 9] == ""){
           killMove.push(board_stateidx + 9)
-      }
+        }
   
       }
      else {
-        if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+        if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
           move.push(board_stateidx + 4);
 
         if((board_stateidx + 4) >= 0 
           && (this.game_state.board_state[board_stateidx + 4] == "r" 
               || this.game_state.board_state[board_stateidx + 4] == "rq")
           && (board_stateidx + 7) >=0 && (board_stateidx + 7) < this.game_state.board_state.length
+          && row + 2 == Math.floor((board_stateidx+7)/4)
           && this.game_state.board_state[board_stateidx + 7] == "")
           killMove.push(board_stateidx + 7)
 
@@ -211,32 +154,142 @@ class Checker extends React.Component {
      if((turn == "r" && this.game_state.board_state[board_stateidx] == "rq") || 
       (turn == "b" && this.game_state.board_state[board_stateidx] == "bq")){
         if(row % 2 == 0) {
-          if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
-             move.push(board_stateidx - 4);
-          if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == ""))
+          if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == "") && row - 1 == Math.floor((board_stateidx-3)/4))
              move.push(board_stateidx - 3);
-          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+
+          if((board_stateidx - 3) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 3] == "b" 
+              || this.game_state.board_state[board_stateidx - 3] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 3] == "r" 
+              || this.game_state.board_state[board_stateidx - 3] == "rq")))
+          && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
+          && row - 2 == Math.floor((board_stateidx - 7)/4)
+          && this.game_state.board_state[board_stateidx - 7] == "")
+          killMove.push(board_stateidx - 7)
+
+          if((board_stateidx - 4) >= 0 
+            && (board_stateidx - 4) <32
+            && row - 1 == Math.floor((board_stateidx - 4)/4) 
+            && (this.game_state.board_state[board_stateidx - 4] == ""))
+             move.push(board_stateidx - 4);
+
+          if((board_stateidx - 4) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 4] == "b" 
+              || this.game_state.board_state[board_stateidx - 4] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 4] == "r" 
+              || this.game_state.board_state[board_stateidx - 4] == "rq")))
+          && (board_stateidx - 9) >=0 && (board_stateidx - 9) < this.game_state.board_state.length
+          && row - 2 == Math.floor((board_stateidx - 9)/4)
+          && this.game_state.board_state[board_stateidx - 9] == "")
+          killMove.push(board_stateidx - 9)
+          
+          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
               move.push(board_stateidx + 4);
-          if((board_stateidx + 5) >= 0 && (this.game_state.board_state[board_stateidx + 5] == ""))
+
+          let validMoveIdx = board_stateidx + 4
+          let killMoveIdx = board_stateidx + 7
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row + 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)
+            
+          if((board_stateidx + 5) >= 0 
+            && (this.game_state.board_state[board_stateidx + 5] == "")
+            && row + 2 == Math.floor((board_stateidx + 5)/4))
               move.push(board_stateidx + 5);
+
+          validMoveIdx = board_stateidx + 5
+          killMoveIdx = board_stateidx + 9
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row + 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)
+
         }
         else {
-           if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == ""))
-             move.push(board_stateidx - 5);
-          if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == ""))
+          if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") && row - 1 == Math.floor((board_stateidx-4)/4))
              move.push(board_stateidx - 4);
-          if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == ""))
+
+          let validMoveIdx = board_stateidx - 4
+          let killMoveIdx = board_stateidx - 7
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row - 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)
+
+          if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == "") && row - 1 == Math.floor((board_stateidx-5)/4))
+             move.push(board_stateidx - 5);
+
+          validMoveIdx = board_stateidx - 5
+          killMoveIdx = board_stateidx - 9
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row - 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)          
+          
+          if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == "") && row + 1 == Math.floor((board_stateidx+3)/4))
               move.push(board_stateidx + 3);
-          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == ""))
+
+          validMoveIdx = board_stateidx + 3
+          killMoveIdx = board_stateidx + 7
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row + 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)
+          
+          if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
               move.push(board_stateidx + 4);
+
+          validMoveIdx = board_stateidx + 4
+          killMoveIdx = board_stateidx + 9
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
+              || this.game_state.board_state[validMoveIdx] == "bq"))
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
+              || this.game_state.board_state[validMoveIdx] == "rq")))
+          && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
+          && row + 2 == Math.floor((killMoveIdx)/4)
+          && this.game_state.board_state[killMoveIdx] == "")
+          killMove.push(killMoveIdx)  
+
         }
         //return move;
      }
      return {move: move, killMove: killMove};
    }
+
+  moveCoin(fromIdx, toIdx){
+    console.log("moving coin", fromIdx, toIdx);
+  }
   render() {
     var canMove = this.canMove.bind(this);
     var highlightMoves = this.highlightMoves.bind(this);
+    var moveCoin = this.moveCoin.bind(this);
     return (
       <div id="board">
         <BoardCells game_state={this.game_state} root= {this}/>
