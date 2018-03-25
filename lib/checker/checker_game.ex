@@ -55,7 +55,7 @@ defmodule CheckerWeb.CheckerGame do
   end
 
   # userid will be int
-  # assume step like {from: to:}
+  # assume step like {from: int to: int}
   # return the game_state: whole dict
   def check_validation(user_id, game_id, step) do
     # check all rules.
@@ -72,7 +72,36 @@ defmodule CheckerWeb.CheckerGame do
 
       String.at(game.turn, 0) == "c" ->
         # TODO: add logic for turn "cr*" "cb*"
-        nil
+        cond do
+          user_id != game.red and user_id != game.black ->
+            {:error, "Not valid user for this game."}
+
+          user_id == game.red and String.at(game.turn, 1) != "r" ->
+            {:error, "Not your turn."}
+
+          user_id == game.black and String.at(game.turn, 1) != "b" ->
+            {:error, "Not your turn."}
+
+          # prerequisite: user is valid for the turn
+          true ->
+            # pos is string
+            # enough for most "31"
+            pos = String.slice(game.turn, 2, 10)
+
+            if Integer.to_string(from) != pos do
+              {:error, "You can only choose your piece to jump multi or not."}
+            else
+              # jump multi check.
+              cond do
+                from == to ->
+                  {:ok, change_turn(game, true)}
+
+                # another jump
+                true ->
+                  nil
+              end
+            end
+        end
 
       # prerequisite: no "cr*" "cb*"
       String.at(x, 0) != game.turn ->
@@ -137,6 +166,8 @@ defmodule CheckerWeb.CheckerGame do
         end
     end
   end
+
+  def check_validation_for_continure_turn()
 
   # game dict
   # jump_info like %{eat_pos: 5, is_continue: true, to_pos: 9}
