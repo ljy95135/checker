@@ -4,39 +4,27 @@ import {
   Button
 } from 'reactstrap';
 
-export default function run_checker(root, game_state, game_channel) {
-  // ReactDOM.render(<Checker game_state={game_state}/>, root);
-  // console.log(game_state)
-  ReactDOM.render(<Checker game_state={game_state}  game_channel = {game_channel}/>, root);
+export default function run_checker(root, game_state) {
+  ReactDOM.render(<Checker game_state={game_state} />, root);
 }
 
 class Checker extends React.Component {
   constructor(props) {
     super(props);
-
-    // console.log("Debug channel in Checker:", props.game_channel);
-
-    this.game_channel = props.game_channel;
     this.game_state = props.game_state;
-    // console.log(props.game_state)
-    this.game_state.board_state = props.game_state.board_state;
-//    ["b", "b", "b", "b", "", "", "b", "b",
-  //     "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
-    //   "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
-    // ];
-    // this.game_state.turn = 'b';
-    this.initial_state = {
-      clickedItem : -1,
-      validMoves: [],
-      killMoves: []
-    };
+    // this.game_state.board_state = //this.game_state.borard_state;
+    // ["b", "b", "b", "b", "", "", "b", "b",
+    //    "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
+    //    "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
+    //  ];
+    this.game_state.turn = 'b';
     this.state = {
       clickedItem : -1,
       validMoves: [],
       killMoves: []
     }
   }
-
+  
 
   canMove(turn, board_stateidx) {
     let result = this.getValidMoves(turn, board_stateidx);
@@ -44,12 +32,14 @@ class Checker extends React.Component {
   }
 
    highlightMoves(turn, board_stateidx) {
-      if(this.canMove(turn, board_stateidx)){
+      if(this.canMove(turn, board_stateidx) 
+        && ((this.game_state.turn == "r" && parseInt(this.game_state.red) == window.userID)
+              || (this.game_state.turn == "b" && parseInt(this.game_state.black) == window.userID))){
         let result = this.getValidMoves(turn, board_stateidx);
         this.setState({clickedItem: board_stateidx, validMoves: result.move, killMoves: result.killMove})
       }
       else
-        this.setState({clickedItem: -1, validMoves:[]})
+        this.setState({clickedItem: -1, validMoves:[], killMoves: []})
    }
    getValidMoves(turn, board_stateidx){
     let move = [];
@@ -62,8 +52,8 @@ class Checker extends React.Component {
         if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") && row -1 == Math.floor((board_stateidx-4)/4))
           move.push(board_stateidx - 4)
 
-         if((board_stateidx - 4) >= 0
-          && (this.game_state.board_state[board_stateidx - 4] == "b"
+         if((board_stateidx - 4) >= 0 
+          && (this.game_state.board_state[board_stateidx - 4] == "b" 
               || this.game_state.board_state[board_stateidx - 4] == "bq")
           && (board_stateidx - 9) >=0 && (board_stateidx -9) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx - 9)/4)
@@ -73,8 +63,8 @@ class Checker extends React.Component {
         if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == "") && row - 1 == Math.floor((board_stateidx-3)/4))
           move.push(board_stateidx - 3)
 
-        if((board_stateidx - 3) >= 0
-          && (this.game_state.board_state[board_stateidx - 3] == "b"
+        if((board_stateidx - 3) >= 0 
+          && (this.game_state.board_state[board_stateidx - 3] == "b" 
               || this.game_state.board_state[board_stateidx - 3] == "bq")
           && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx-7)/4)
@@ -82,15 +72,15 @@ class Checker extends React.Component {
 
           killMove.push(board_stateidx - 7)
 
-
-
+        
+  
       }
      else {
         if((board_stateidx - 4) >= 0 && (this.game_state.board_state[board_stateidx - 4] == "") && row -1 == Math.floor((board_stateidx-4)/4))
           move.push(board_stateidx - 4)
 
-        if((board_stateidx - 4) >= 0
-          && (this.game_state.board_state[board_stateidx - 4] == "b"
+        if((board_stateidx - 4) >= 0 
+          && (this.game_state.board_state[board_stateidx - 4] == "b" 
               || this.game_state.board_state[board_stateidx - 4] == "bq")
           && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx-7)/4)
@@ -100,8 +90,8 @@ class Checker extends React.Component {
         if((board_stateidx - 5) >= 0 && (this.game_state.board_state[board_stateidx - 5] == "") && (row-1 == Math.floor((board_stateidx - 5)/4)))
           move.push(board_stateidx - 5)
 
-        if((board_stateidx - 5) >= 0
-          && (this.game_state.board_state[board_stateidx - 5] == "b"
+        if((board_stateidx - 5) >= 0 
+          && (this.game_state.board_state[board_stateidx - 5] == "b" 
               || this.game_state.board_state[board_stateidx - 5] == "bq")
           && (board_stateidx - 9) >=0 && (board_stateidx -9) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx - 9)/4)
@@ -116,8 +106,8 @@ class Checker extends React.Component {
         if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == "") && row + 1 == Math.floor((board_stateidx+3)/4))
           move.push(board_stateidx + 3);
 
-        if((board_stateidx + 3) >= 0
-          && (this.game_state.board_state[board_stateidx + 3] == "r"
+        if((board_stateidx + 3) >= 0 
+          && (this.game_state.board_state[board_stateidx + 3] == "r" 
               || this.game_state.board_state[board_stateidx + 3] == "rq")
           && (board_stateidx + 7) >=0 && (board_stateidx + 7) < this.game_state.board_state.length
           && row + 2 == Math.floor((board_stateidx+7)/4)
@@ -127,22 +117,22 @@ class Checker extends React.Component {
         if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
           move.push(board_stateidx + 4)
 
-        if((board_stateidx + 4) >= 0
-          && (this.game_state.board_state[board_stateidx + 4] == "r"
+        if((board_stateidx + 4) >= 0 
+          && (this.game_state.board_state[board_stateidx + 4] == "r" 
               || this.game_state.board_state[board_stateidx + 4] == "rq")
           && (board_stateidx + 9) >=0 && (board_stateidx + 9) < this.game_state.board_state.length
           && row + 2 == Math.floor((board_stateidx + 9)/4)
           && this.game_state.board_state[board_stateidx + 9] == ""){
           killMove.push(board_stateidx + 9)
         }
-
+  
       }
      else {
         if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
           move.push(board_stateidx + 4);
 
-        if((board_stateidx + 4) >= 0
-          && (this.game_state.board_state[board_stateidx + 4] == "r"
+        if((board_stateidx + 4) >= 0 
+          && (this.game_state.board_state[board_stateidx + 4] == "r" 
               || this.game_state.board_state[board_stateidx + 4] == "rq")
           && (board_stateidx + 7) >=0 && (board_stateidx + 7) < this.game_state.board_state.length
           && row + 2 == Math.floor((board_stateidx+7)/4)
@@ -151,9 +141,9 @@ class Checker extends React.Component {
 
         if((board_stateidx + 5) >= 0 && (this.game_state.board_state[board_stateidx + 5] == "") && (row + 1) == Math.floor((board_stateidx + 5)/4))
           move.push(board_stateidx + 5);
-
-        if((board_stateidx + 5) >= 0
-          && (this.game_state.board_state[board_stateidx + 5] == "r"
+        
+        if((board_stateidx + 5) >= 0 
+          && (this.game_state.board_state[board_stateidx + 5] == "r" 
               || this.game_state.board_state[board_stateidx + 5] == "rq")
           && (board_stateidx + 9) >=0 && (board_stateidx + 9) < this.game_state.board_state.length
           && row + 2 == Math.floor((board_stateidx + 9)/4)
@@ -163,64 +153,64 @@ class Checker extends React.Component {
       }
       //return move;
      }
-     if((turn == "r" && this.game_state.board_state[board_stateidx] == "rq") ||
+     if((turn == "r" && this.game_state.board_state[board_stateidx] == "rq") || 
       (turn == "b" && this.game_state.board_state[board_stateidx] == "bq")){
         if(row % 2 == 0) {
           if((board_stateidx - 3) >= 0 && (this.game_state.board_state[board_stateidx - 3] == "") && row - 1 == Math.floor((board_stateidx-3)/4))
              move.push(board_stateidx - 3);
 
-          if((board_stateidx - 3) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 3] == "b"
+          if((board_stateidx - 3) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 3] == "b" 
               || this.game_state.board_state[board_stateidx - 3] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 3] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 3] == "r" 
               || this.game_state.board_state[board_stateidx - 3] == "rq")))
           && (board_stateidx - 7) >=0 && (board_stateidx - 7) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx - 7)/4)
           && this.game_state.board_state[board_stateidx - 7] == "")
           killMove.push(board_stateidx - 7)
 
-          if((board_stateidx - 4) >= 0
+          if((board_stateidx - 4) >= 0 
             && (board_stateidx - 4) <32
-            && row - 1 == Math.floor((board_stateidx - 4)/4)
+            && row - 1 == Math.floor((board_stateidx - 4)/4) 
             && (this.game_state.board_state[board_stateidx - 4] == ""))
              move.push(board_stateidx - 4);
 
-          if((board_stateidx - 4) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 4] == "b"
+          if((board_stateidx - 4) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[board_stateidx - 4] == "b" 
               || this.game_state.board_state[board_stateidx - 4] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 4] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[board_stateidx - 4] == "r" 
               || this.game_state.board_state[board_stateidx - 4] == "rq")))
           && (board_stateidx - 9) >=0 && (board_stateidx - 9) < this.game_state.board_state.length
           && row - 2 == Math.floor((board_stateidx - 9)/4)
           && this.game_state.board_state[board_stateidx - 9] == "")
           killMove.push(board_stateidx - 9)
-
+          
           if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
               move.push(board_stateidx + 4);
 
           let validMoveIdx = board_stateidx + 4
           let killMoveIdx = board_stateidx + 7
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row + 2 == Math.floor((killMoveIdx)/4)
           && this.game_state.board_state[killMoveIdx] == "")
           killMove.push(killMoveIdx)
-
-          if((board_stateidx + 5) >= 0
+            
+          if((board_stateidx + 5) >= 0 
             && (this.game_state.board_state[board_stateidx + 5] == "")
             && row + 2 == Math.floor((board_stateidx + 5)/4))
               move.push(board_stateidx + 5);
 
           validMoveIdx = board_stateidx + 5
           killMoveIdx = board_stateidx + 9
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row + 2 == Math.floor((killMoveIdx)/4)
@@ -234,10 +224,10 @@ class Checker extends React.Component {
 
           let validMoveIdx = board_stateidx - 4
           let killMoveIdx = board_stateidx - 7
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row - 2 == Math.floor((killMoveIdx)/4)
@@ -249,45 +239,45 @@ class Checker extends React.Component {
 
           validMoveIdx = board_stateidx - 5
           killMoveIdx = board_stateidx - 9
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row - 2 == Math.floor((killMoveIdx)/4)
           && this.game_state.board_state[killMoveIdx] == "")
-          killMove.push(killMoveIdx)
-
+          killMove.push(killMoveIdx)          
+          
           if((board_stateidx + 3) >= 0 && (this.game_state.board_state[board_stateidx + 3] == "") && row + 1 == Math.floor((board_stateidx+3)/4))
               move.push(board_stateidx + 3);
 
           validMoveIdx = board_stateidx + 3
           killMoveIdx = board_stateidx + 7
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row + 2 == Math.floor((killMoveIdx)/4)
           && this.game_state.board_state[killMoveIdx] == "")
           killMove.push(killMoveIdx)
-
+          
           if((board_stateidx + 4) >= 0 && (this.game_state.board_state[board_stateidx + 4] == "") && row + 1 == Math.floor((board_stateidx+4)/4))
               move.push(board_stateidx + 4);
 
           validMoveIdx = board_stateidx + 4
           killMoveIdx = board_stateidx + 9
-          if((validMoveIdx) >= 0
-          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b"
+          if((validMoveIdx) >= 0 
+          && ((this.game_state.board_state[board_stateidx] == "rq" && (this.game_state.board_state[validMoveIdx] == "b" 
               || this.game_state.board_state[validMoveIdx] == "bq"))
-          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r"
+          || (this.game_state.board_state[board_stateidx] == "bq" && (this.game_state.board_state[validMoveIdx] == "r" 
               || this.game_state.board_state[validMoveIdx] == "rq")))
           && (killMoveIdx) >=0 && (killMoveIdx) < this.game_state.board_state.length
           && row + 2 == Math.floor((killMoveIdx)/4)
           && this.game_state.board_state[killMoveIdx] == "")
-          killMove.push(killMoveIdx)
+          killMove.push(killMoveIdx)  
 
         }
         //return move;
@@ -295,36 +285,16 @@ class Checker extends React.Component {
      return {move: move, killMove: killMove};
    }
 
-  re_render(new_state) {
-    this.game_state = new_state;
-    this.setState(this.initial_state);
-  }
-
-  moveCoin(fromIdx, toIdx, game_channel){
-    game_channel.push('game:update_border', {next_step: {"from": fromIdx, "to": toIdx}})
-    .receive('ok', (payload) => {
-      this.re_render(payload.state);
-      this.setState(this.initial_state);
-      // console.log("Debug: update", payload.state);
-      })
-    .receive('error', (info) => {
-        console.log("Error to see game data", info);
-      });
-
+  moveCoin(fromIdx, toIdx){
+    console.log("moving coin", fromIdx, toIdx);
   }
   render() {
     var canMove = this.canMove.bind(this);
     var highlightMoves = this.highlightMoves.bind(this);
     var moveCoin = this.moveCoin.bind(this);
-    var re_render = this.re_render.bind(this);
-
-    this.game_channel.on("someone_moves", msg => {
-      this.re_render(msg.state);
-    });
-
     return (
       <div id="board">
-        <BoardCells game_state={this.game_state} root= {this} game_channel={this.game_channel}/>
+        <BoardCells game_state={this.game_state} root= {this}/>
       </div>
     );
   }
@@ -343,15 +313,14 @@ function BoardCells(params) {
       let canMove = false;
       if(stateidx <32)
         canMove = params.root.canMove(params.game_state.turn, stateidx);
-
-      cols.push(<BoardCell idx={stateidx}
-                           row={j}
-                           game_channel = {params.game_channel}
-                           col={i}
-                           current_elem={params.game_state.board_state[stateidx]}
-                           canMove = {canMove}
-                           clicked= {params.root.state.clickedItem == stateidx}
-                           validMoves = {params.root.state.validMoves}
+      
+      cols.push(<BoardCell idx={stateidx} 
+                           row={j} 
+                           col={i} 
+                           current_elem={params.game_state.board_state[stateidx]} 
+                           canMove = {canMove} 
+                           clicked= {params.root.state.clickedItem == stateidx} 
+                           validMoves = {params.root.state.validMoves} 
                            killMoves={params.root.state.killMoves}
                            root={params.root}/>)
       if((j%2 == 0  && i%2 !=0) || (j%2 !=0 && i %2 == 0)){
@@ -365,21 +334,35 @@ function BoardCells(params) {
     <div className="inner">
          {rows}
      </div>
+    //  <div className="inner">
+    //  {/* row1 */}
+    //  <div className="boardcell">&nbsp;</div>
+    //  <div id="0" className="boardcell blackSoldier">&nbsp;</div>
+    //  <div className="boardcell">&nbsp;</div>
+    //  <div id="1" className="boardcell blackSoldier">&nbsp;</div>
+    //  <div className="boardcell">&nbsp;</div>
+    //  <div id="2" className="boardcell blackSoldier">&nbsp;</div>
+    //  <div className="boardcell">&nbsp;</div>
+    //  <div id="3" className="boardcell blackSoldier">&nbsp;</div>
+    //{/* row2 */}
+    //{/* ... */}
+    // </div>
+
   );
 }
 
 function BoardCell(params){
-
+  
 
   if ((params.row %2 == 0 && params.col %2 == 0) || (params.row %2 != 0 && params.col%2 !=0)){
       return (<div className = "boardcell">&nbsp;</div>);
   }
   else{
     if (params.validMoves.indexOf(params.idx) != -1)
-      return (<div className = "boardcell validMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>&nbsp;</div>);
+      return (<div className = "boardcell validMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx)}>&nbsp;</div>);
     if(params.killMoves.indexOf(params.idx) != -1)
-      return (<div className = "boardcell killMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>&nbsp;</div>);
-
+      return (<div className = "boardcell killMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx)}>&nbsp;</div>);
+    
     if(params.current_elem == "b")
       return (<div className = {params.canMove ? (params.clicked ? 'boardcell blackyellowhighlight' :'boardcell blackwhitehighlight') : 'boardcell blackSoldier' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>);
     else if(params.current_elem == "r")
@@ -391,5 +374,5 @@ function BoardCell(params){
     else
       return (<div className = "boardcell">&nbsp;</div>);
   }
-
+  
 }
