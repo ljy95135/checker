@@ -57,6 +57,23 @@
     background-size: 110%,90%;
 }
 
+.blackyellowhighlight 
+{
+	background: url(/images/checkers-highlight-yellow.svg) no-repeat center,url(/images/checkers-checker-black.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
+.redyellowhighlight {
+        background: url(/images/checkers-highlight-yellow.svg) no-repeat center,url(/images/checkers-checker-red.svg) no-repeat center;
+    background-size: 110%,90%;
+}
+
+.validMove {
+    background: url(/images/checkers-highlight-green.svg) no-repeat center;
+    background-size: 90%;
+}
+
+
 .boardcell {
     position: relative;
     float: left;
