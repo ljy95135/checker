@@ -70,6 +70,11 @@ defmodule CheckerWeb.CheckerGame do
       x == "" ->
         {:error, "There is no piece on this position."}
 
+      String.at(game.turn, 0) == "c" ->
+        # TODO: add logic for turn "cr*" "cb*"
+        nil
+
+      # prerequisite: no "cr*" "cb*"
       String.at(x, 0) != game.turn ->
         {:error, "This is not your piece."}
 
