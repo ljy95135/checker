@@ -32,6 +32,15 @@ class Checker extends React.Component {
             validMoves: [],
             killMoves: []
         };
+
+        this.canMove = this.canMove.bind(this);
+        this.highlightMoves = this.highlightMoves.bind(this);
+        this.moveCoin = this.moveCoin.bind(this);
+        this.re_render = this.re_render.bind(this);
+
+        this.game_channel.on("someone_moves", msg => {
+            this.re_render(msg.state);
+        });
     }
 
     re_render(new_state) {
@@ -452,15 +461,6 @@ class Checker extends React.Component {
     }
 
     render() {
-        var canMove = this.canMove.bind(this);
-        var highlightMoves = this.highlightMoves.bind(this);
-        var moveCoin = this.moveCoin.bind(this);
-        var re_render = this.re_render.bind(this);
-
-        this.game_channel.on("someone_moves", msg => {
-            this.re_render(msg.state);
-        });
-
         return (
             <div id="board">
         <BoardCells game_state={this.game_state} root= {this} game_channel={this.game_channel}/>

@@ -98,7 +98,23 @@ defmodule CheckerWeb.CheckerGame do
 
                 # another jump
                 true ->
-                  nil
+                  jumps = jump_positions(from, game.board_state)
+
+                  cond do
+                    check_occupied(to, game.board_state) ->
+                      {:error, "Invalid step. Occupied."}
+
+                    jump = Enum.find(jumps, &find_in_jumps(to, &1)) ->
+                      game = change_turn(game, false, jump)
+                      game = delete_piece(jump, game)
+                      game = become_queen(from, to, game)
+                      try_call(game.id, {:update, game})
+                      spawn(__MODULE__, :check_win, [game])
+                      {:ok, game}
+
+                    true ->
+                      {:error, "Invalid step. Can't reach"}
+                  end
               end
             end
         end
@@ -167,7 +183,8 @@ defmodule CheckerWeb.CheckerGame do
     end
   end
 
-  def check_validation_for_continure_turn()
+  def check_validation_for_continure_turn() do
+  end
 
   # game dict
   # jump_info like %{eat_pos: 5, is_continue: true, to_pos: 9}
