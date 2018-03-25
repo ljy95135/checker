@@ -12,12 +12,12 @@ class Checker extends React.Component {
   constructor(props) {
     super(props);
     this.game_state = props.game_state;
-    // this.game_state.board_state = //this.game_state.borard_state;
+     this.game_state.board_state = this.game_state.board_state;
     // ["b", "b", "b", "b", "", "", "b", "b",
     //    "bq", "b", "b", "b", "", "rq", "", "", "", "", "", "", "r",
     //    "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"
     //  ];
-    this.game_state.turn = 'b';
+    //this.game_state.turn = 'b';
     this.state = {
       clickedItem : -1,
       validMoves: [],
