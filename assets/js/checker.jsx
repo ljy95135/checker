@@ -479,11 +479,22 @@ class Checker extends React.Component {
 
     render() {
         return (
-            <div id="board">
-        <BoardCells game_state={this.game_state} root= {this} game_channel={this.game_channel}/>
-      </div>
+        <div>
+          <ShowTurn root={this}/>
+          <div id="board">
+            <BoardCells game_state={this.game_state} root= {this} game_channel={this.game_channel}/>
+          </div>
+        </div>
         );
     }
+}
+
+
+function ShowTurn(params){
+  if (params.root.check_player_this_turn()) {
+    return (<p className="turn_info">Please make your choice. Good luck!</p>)
+  }
+  return (<p className="turn_info">Your opponent's turn now. Think hard!</p>)
 }
 
 // param: list[32] to tell the piece situation
@@ -536,11 +547,17 @@ function BoardCell(params) {
     } else {
         if (params.validMoves.indexOf(params.idx) != -1)
             return (
-                <div className = "boardcell validMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>&nbsp;</div>
+                <div className = "boardcell validMove"
+                onClick =
+                { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>
+                &nbsp;</div>
             );
         if (params.killMoves.indexOf(params.idx) != -1)
             return (
-                <div className = "boardcell killMove" onClick = { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>&nbsp;</div>
+                <div className = "boardcell killMove"
+                onClick =
+                { () => params.root.moveCoin(params.root.state.clickedItem, params.idx, params.game_channel)}>
+                &nbsp;</div>
             );
 
         if (params.current_elem == "b")
