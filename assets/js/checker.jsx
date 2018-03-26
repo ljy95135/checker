@@ -33,6 +33,7 @@ class Checker extends React.Component {
             killMoves: []
         };
 
+        this.check_player_this_turn = this.check_player_this_turn.bind(this);
         this.canMove = this.canMove.bind(this);
         this.highlightMoves = this.highlightMoves.bind(this);
         this.moveCoin = this.moveCoin.bind(this);
@@ -41,6 +42,16 @@ class Checker extends React.Component {
         this.game_channel.on("someone_moves", msg => {
             this.re_render(msg.state);
         });
+    }
+
+    check_player_this_turn(){
+      let len_turn = this.game_state.turn.length;
+      if (len_turn == 1){
+        return (this.game_state.turn == "r" && window.userID == this.game_state.red)
+        || (this.game_state.turn == "b" && window.userID == this.game_state.black);
+      }
+      return (this.game_state.turn[1] == "r" && window.userID == this.game_state.red)
+      || (this.game_state.turn[1] == "b" && window.userID == this.game_state.black);
     }
 
     re_render(new_state) {
@@ -53,13 +64,18 @@ class Checker extends React.Component {
         return result.move.length > 0 || result.killMove.length > 0;
     }
 
+
     highlightMoves(turn, board_stateidx) {
-        if (this.canMove(turn, board_stateidx) &&
+        if (
+          this.check_player_this_turn() &&
+          this.canMove(turn, board_stateidx) &&
             ((this.game_state.turn == "r" && parseInt(this.game_state.red) ==
                     window.userID) ||
                 (this.game_state.turn == "b" && parseInt(this.game_state
-                    .black) == window.userID))) {
+                    .black) == window.userID))
+                  ) {
             let result = this.getValidMoves(turn, board_stateidx);
+            // console.log("I should not be here");
             this.setState({
                 clickedItem: board_stateidx,
                 validMoves: result.move,
@@ -72,6 +88,7 @@ class Checker extends React.Component {
                 killMoves: []
             })
     }
+
     getValidMoves(turn, board_stateidx) {
         let move = [];
         let killMove = [];
@@ -450,7 +467,7 @@ class Checker extends React.Component {
                 }
             })
             .receive('ok', (payload) => {
-                  console.log("receive now!");
+                  console.log("receive now!", payload.state);
                 this.re_render(payload.state);
                 this.setState(this.initial_state);
                 // console.log("Debug: update", payload.state);
@@ -485,6 +502,7 @@ function BoardCells(params) {
 
             cols.push(
                 <BoardCell idx={stateidx}
+                           check_player_this_turn={params.root.check_player_this_turn}
                            row={j}
                            col={i}
                            game_channel = {params.game_channel}
@@ -527,19 +545,40 @@ function BoardCell(params) {
 
         if (params.current_elem == "b")
             return (
-                <div className = {params.canMove ? (params.clicked ? 'boardcell blackyellowhighlight' :'boardcell blackwhitehighlight') : 'boardcell blackSoldier' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>
+                <div className = {(params.canMove && params.check_player_this_turn()) ?
+                  (params.clicked ? 'boardcell blackyellowhighlight' :'boardcell blackwhitehighlight')
+                  : 'boardcell blackSoldier' }
+                  onClick= { () => {params.root.highlightMoves(params.root.game_state.turn, params.idx)} }>
+                  &nbsp;</div>
             );
         else if (params.current_elem == "r")
             return (
-                <div className = {params.canMove ? (params.clicked ? 'boardcell redyellowhighlight' :'boardcell redwhitehighlight') : 'boardcell redSoldier' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>
+                <div className =
+                {(params.canMove && params.check_player_this_turn()) ?
+                  (params.clicked ? 'boardcell redyellowhighlight' :'boardcell redwhitehighlight')
+                  : 'boardcell redSoldier' }
+                  onClick= { () =>
+                    {params.root.highlightMoves(params.root.game_state.turn, params.idx)} }>
+                    &nbsp;</div>
             );
         else if (params.current_elem == "rq")
             return (
-                <div className = {params.canMove ? (params.clicked ? 'boardcell redqueenyellowhighlight' :'boardcell redqueenwhitehighlight') : 'boardcell redQueen' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>
+                <div className =
+                {(params.canMove && params.check_player_this_turn()) ?
+                  (params.clicked ? 'boardcell redqueenyellowhighlight' :'boardcell redqueenwhitehighlight')
+                  : 'boardcell redQueen' }
+                  onClick=
+                  { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>
+                  &nbsp;</div>
             );
         else if (params.current_elem == "bq")
             return (
-                <div className = {params.canMove ? (params.clicked ? 'boardcell blackqueenyellowhighlight' :'boardcell blackqueenwhitehighlight') : 'boardcell blackQueen' } onClick= { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>
+                <div className =
+                {(params.canMove && params.check_player_this_turn()) ?
+                  (params.clicked ? 'boardcell blackqueenyellowhighlight' :'boardcell blackqueenwhitehighlight')
+                  : 'boardcell blackQueen' }
+                  onClick=
+                  { () => params.root.highlightMoves(params.root.game_state.turn, params.idx) }>&nbsp;</div>
             );
         else
             return (<div className = "boardcell">&nbsp;</div>);
