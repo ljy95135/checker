@@ -1,7 +1,11 @@
 <div class ="header">
-     <h1><center>WELCOME TO OUR CHECKERS GAME..!!</center></h1>
-  </div> 
-<center> <img src = "images\checker-clipart-777096-checkers-game.gif"></center>
+     <h1><center class="IndexTitle">WELCOME TO OUR CHECKERS GAME..!!</center></h1>
+</div>
+
+<center> <img src = "images\checker-clipart-777096-checkers-game.gif"> </center>
+
+<center> <h2> <a href="/rooms">Go to create/join rooms to play!</a> </h2> </center>
+
 <h2>Log in to play!</h2>
 <!-- session_path(@conn, :create) -->
 <%= form_tag("/session", method: :post) do %>

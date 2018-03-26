@@ -106,10 +106,13 @@ function init() {
 
     // console.log("on", msg)
     game_channel.on("update_user_info", msg => {
-      update_user_info(msg.game, channel)
+      update_user_info(msg.game, channel);
     });
     game_channel.on("game_result", (msg) => {
-      end_game(msg.loser)
+      end_game(msg.loser);
+    });
+    game_channel.on("someone_win", (msg) => {
+      game_over_winner(msg.winner);
     });
   }
 
@@ -143,6 +146,19 @@ function end_game(loser) {
   } else {
     // winner and viewer
     alert("user " + loser + " losed in the game. It's a nice game!");
+    window.location = "/rooms";
+  }
+}
+
+function game_over_winner(winner) {
+  let user_id = window.userID;
+  if (user_id == winner) {
+    // You lose
+    alert("You win!")
+    window.location = "/rooms";
+  } else {
+    // winner and viewer
+    alert("Game is over, nice game!");
     window.location = "/rooms";
   }
 }

@@ -4,6 +4,8 @@ defmodule CheckerWeb.GlobalChannel do
 
   # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
   # We learn how this attribution arrange the code structure.
+  # BUT!!: I (Jiangyi Lin) figure out how all handle_in and join to work with
+  #   my channels myself instead of copying his code.
 
   def join("global", payload, socket) do
     # Logger.debug(payload)

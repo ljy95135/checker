@@ -2,6 +2,10 @@ defmodule CheckerWeb.CheckerGame do
   use GenServer
   # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
   # We learn how this attribution arrange the code structure.
+  # BUT!! All game's rules I (Jiangyi Lin) just figure it by out myself.
+
+  # TODO: jump become queen maybe can jump again, but not big deal.
+  #   may have rare bugs for multi jumps so should add some tests.
 
   # idiot formatter!!
   defstruct id: nil,
@@ -71,7 +75,6 @@ defmodule CheckerWeb.CheckerGame do
         {:error, "There is no piece on this position."}
 
       String.at(game.turn, 0) == "c" ->
-        # TODO: add logic for turn "cr*" "cb*"
         cond do
           user_id != game.red and user_id != game.black ->
             {:error, "Not valid user for this game."}
@@ -94,7 +97,9 @@ defmodule CheckerWeb.CheckerGame do
               # jump multi check.
               cond do
                 from == to ->
-                  {:ok, change_turn(game, true)}
+                  game = change_turn(game, true)
+                  try_call(game.id, {:update, game})
+                  {:ok, game}
 
                 # another jump
                 true ->
@@ -563,11 +568,6 @@ defmodule CheckerWeb.CheckerGame do
       nil
     end
   end
-
-  # def check_eat_boolean(x_pos, eat_pos, board) do
-  #   eat = Enum.at(board, eat_pos)
-  #   x = Enum.at(board, x_pos)
-  # end
 
   # boolean
   def check_again(to_pos, board, eaten_pos, info) do

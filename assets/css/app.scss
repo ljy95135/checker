@@ -1,4 +1,7 @@
 /* This file is for your main application css. */
+/* Attribution: the checker board and piece picture resource come from:
+  http://www.247checkers.com
+*/
 @import "bootstrap";
 #board {
   background-image: url(/images/checkers-board.jpg);
@@ -101,7 +104,7 @@
     width: 12.5%;
 }
 
-center {
+center.IndexTitle{
    text-shadow: 3px 2px red;
    font-family: "Comic Sans MS", cursive, sans-serif;
 }

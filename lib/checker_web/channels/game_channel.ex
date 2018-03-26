@@ -7,6 +7,8 @@ defmodule CheckerWeb.GameChannel do
 
   # Attribution: http://codeloveandboards.com/blog/2016/05/21/building-phoenix-battleship-pt-3/
   # We learn how this attribution arrange the code structure.
+  # BUT!!: I (Jiangyi Lin) figure out how all handle_in and join to work with
+  #   my channels myself instead of copying his code.
 
   def join("game:" <> game_id, _message, socket) do
     # Logger.debug "Joining Game channel #{game_id}", game_id: game_id
@@ -42,7 +44,7 @@ defmodule CheckerWeb.GameChannel do
         {:reply, {:ok, %{state: new_state}}, socket}
 
       {:error, info} ->
-        {:reply, {:error, %{info: "invalid step."}}, socket}
+        {:reply, {:error, %{info: "invalid step: " <> info}}, socket}
     end
   end
 end
