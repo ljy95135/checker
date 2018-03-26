@@ -64,7 +64,6 @@ class Checker extends React.Component {
         return result.move.length > 0 || result.killMove.length > 0;
     }
 
-
     highlightMoves(turn, board_stateidx) {
         if (
           this.check_player_this_turn() &&
@@ -90,6 +89,10 @@ class Checker extends React.Component {
     }
 
     getValidMoves(turn, board_stateidx) {
+      if (turn.length!=1){
+        // to do return what it needs.
+        return null;
+      }
         let move = [];
         let killMove = [];
         if (board_stateidx < 0 || board_stateidx >= this.game_state.board_state
