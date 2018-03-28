@@ -23,9 +23,9 @@ Yes
 Yes
 
 7. What parts of the project did each team member work on?
-Decision on Architecture and collectiong resources - Jiangyi, Neha
+Decision on architecture and collectiong resources - Jiangyi, Neha
 Database implementation - Jiangyi, Neha
-WebSocket Code on browser and server - Jiangyi
+WebSocket code on browser and server - Jiangyi
 Game room creation page - Jiangyi
 Client side game logic - Neha
 Player resign and multi-jump part on browser - Jiangyi
