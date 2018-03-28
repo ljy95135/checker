@@ -30,7 +30,8 @@ Game room creation page - Jiangyi
 Client side game logic - Neha
 Player resign and multi-jump part on browser - Jiangyi
 Server side game logic - Jiangyi
-UI Design and CSS - Neha
+UI logic - Neha
+CSS and Bootstrap - Neha
 Documentation - Jiangyi, Neha
 Deployment - Jiangyi
 
